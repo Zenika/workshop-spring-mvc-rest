@@ -1,0 +1,110 @@
+\section{Proxies}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Proxies dans Spring}
+ \begin{itemize}
+  \item Principe très utilisé dans Spring
+  \item Un mécanisme pour implémenter la programmation orientée aspect
+  \item Permet d'ajouter du comportement de façon transparente
+  \item Ex. : begin/commit de transaction, sécurité, logging
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Principe d'un proxy (AOP)}
+ \begin{javacode}
+OrderConfirmation o = orderService.submit(order);
+ \end{javacode}
+
+TODO mettre une image
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Proxies dans Spring Data JPA}
+ \begin{itemize}
+  \item Principe légèrement différent des proxies AOP
+  \item Il n'y pas de cible
+  \item Le comportement de la méthode est implémenté à la volée
+  \item Ex. de critères d'implémentation : le nom de la méthode
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Proxy JDK}
+ \begin{itemize}
+  \item Spring utilise les proxies JDK
+  \item L'API proxies JDK est simple mais bas niveau
+  \item Spring l'enrichit, notamment via AspectJ
+  \item Ex. : notion de poincut, configuration par annotations, etc.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer un proxy JDK}
+
+\begin{javacode}
+ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(
+  getClass().getClassLoader(),
+  new Class<?>[]{ContactRepository.class},
+  invocationHandler
+);
+\end{javacode}
+
+ \begin{itemize}
+  \item Qu'est-ce que l'\code{InvocationHandler} ?
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{InvocationHandler}}
+ \begin{itemize}
+  \item L'\code{InvocationHandler} implémente le comportement
+ \end{itemize}
+
+\begin{javacode}
+InvocationHandler invocationHandler = new InvocationHandler() {      
+  public Object invoke(Object proxy, Method method, Object[] args)
+                                throws Throwable {
+    System.out.println(method.getName());
+    return null;
+  }
+};
+ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(..);
+repo.findAll(); // affiche ``findAll''
+\end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Proxies dans Spring Data JPA}
+ \begin{itemize}
+  \item Un repository avec un interface custom
+  \item Le proxy correspond ``route'' les appels :
+  \begin{itemize}
+   \item Implémentation par défaut pour les méthodes CRUD
+   \item Implémentation custom pour les méthodes de l'interface custom
+   \item Implémentation suivant l'annotation apposée
+   \item Implémentation dynamique pour les méthodes basées sur les conventions
+   \item etc.
+  \end{itemize}
+ \end{itemize}
+
+\begin{javacode}
+InvocationHandler invocationHandler = new InvocationHandler() {      
+  public Object invoke(Object proxy, Method method, Object[] args)
+                                throws Throwable {
+    System.out.println(method.getName());
+    return null;
+  }
+};
+ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(..);
+repo.findAll(); // affiche ``findAll''
+\end{javacode}
+
+\end{frame}
