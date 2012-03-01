@@ -116,6 +116,7 @@
 		<module>spring-jpa-start</module>
 		<module>spring-jpa-solution</module>
 		<module>spring-data-jpa-hello-world-start</module>
+		<module>spring-data-jpa-hello-world-solution</module>
 
 	</modules>
 </project>

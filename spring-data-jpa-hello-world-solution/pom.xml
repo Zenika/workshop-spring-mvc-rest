@@ -8,6 +8,6 @@
 		<groupId>com.zenika</groupId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>spring-data-jpa-hello-world-start</artifactId>
+	<artifactId>spring-data-jpa-hello-world-solution</artifactId>
 
 </project>
