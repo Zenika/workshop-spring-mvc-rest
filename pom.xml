@@ -117,6 +117,7 @@
 		<module>spring-jpa-solution</module>
 		<module>spring-data-jpa-hello-world-start</module>
 		<module>spring-data-jpa-hello-world-solution</module>
-
+		<module>spring-data-jpa-crud-start</module>
+		<module>spring-data-jpa-crud-solution</module>
 	</modules>
 </project>
