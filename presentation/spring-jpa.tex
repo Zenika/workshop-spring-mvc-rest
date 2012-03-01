@@ -1,0 +1,154 @@
+\section{Spring JPA}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{\code{LocalContainerEntityManagerFactoryBean}}
+ \begin{itemize}
+  \item Pour la configuration de JPA dans Spring
+  \item Fait partie du Spring Framework (module ORM)
+  \item Flexible :
+  \begin{itemize}  
+    \item Injection de dépendances (ex. : \code{DataSource})
+    \item Compatible avec les différentes implémentations JPA
+    \item Pas besoin de \code{persistence.xml}
+    \item Scanning de packages pour trouver les entités
+  \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+ \frametitle{Configuration de JPA avec Spring}
+
+ \begin{xmlcode}
+<bean id="entityManagerFactory"
+      class="o.s.orm.jpa.LocalContainerEntityManagerFactoryBean">
+  <property name="dataSource" ref="dataSource" />
+  <property name="jpaVendorAdapter">
+  <bean class="o.s.orm.jpa.vendor.HibernateJpaVendorAdapter">
+    <property name="showSql" value="true" />
+    <property name="generateDdl" value="true" />
+    <property name="database" value="H2" />
+  </bean>
+  <property name="packagesToScan" value="com.zenika.nordnet.model" />
+</bean>
+ \end{xmlcode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Entité JPA}
+
+ \begin{javacode}
+package com.zenika.nordnet.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Contact {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
+
+  private String firstname, lastname;
+  
+  (...)
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{TestContext framework}
+
+ \begin{javacode}
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("/spring-jpa.xml")
+public class SpringJpaTest {
+
+  @Autowired private EntityManagerFactory emf;
+  
+  @Test public void springJpa() {
+    (...)
+  }
+  
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Méthode de test}
+
+ \begin{javacode}
+@Test public void springJpa() {
+  EntityManager em = emf.createEntityManager();
+  em.getTransaction().begin();
+  try {
+    Contact contact = new Contact();
+    contact.setFirstname("Mickey");
+    contact.setLastname("Mouse");
+    int initialCount = em.createQuery("from Contact")
+      .getResultList().size();
+    em.persist(contact);
+    Assert.assertEquals(
+      initialCount+1,
+      em.createQuery("from Contact").getResultList().size()
+    );
+    em.getTransaction().commit();
+  } finally {
+    em.close();
+  }
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration Java (alternative)}
+
+ \begin{javacode*}{fontsize=\tiny}
+@Configuration
+public class SpringJpaConfiguration {
+  
+  @Bean public EntityManagerFactory emf() {
+    LocalContainerEntityManagerFactoryBean emf = 
+      new LocalContainerEntityManagerFactoryBean();
+    emf.setDataSource(ds());
+    HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+    adapter.setGenerateDdl(true);
+    emf.setJpaVendorAdapter(adapter);
+    emf.setPackagesToScan(Contact.class.getPackage().getName());
+    emf.afterPropertiesSet();
+    return emf.getObject();
+  }
+  
+  @Bean public DataSource ds() {
+    return new EmbeddedDatabaseBuilder()
+      .setType(EmbeddedDatabaseType.H2)
+      .build();
+  }
+  
+}
+ \end{javacode*}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration Java dans le test}
+
+ \begin{javacode}
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes=SpringJpaConfiguration.class)
+public class SpringJpaJavaConfigurationTest {
+
+  @Autowired private EntityManagerFactory emf;
+  
+  @Test public void springJpa() {
+    (...)
+  }
+  
+}
+ \end{javacode}
+\end{frame}

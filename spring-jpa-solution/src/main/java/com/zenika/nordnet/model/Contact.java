@@ -11,16 +11,16 @@ import javax.persistence.Id;
 /**
  * 
  * @author acogoluegnes
- *
+ * 
  */
 @Entity
 public class Contact {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
-	
-	private String firstname,lastname;
+
+	private String firstname, lastname;
 
 	public Long getId() {
 		return id;
@@ -45,5 +45,5 @@ public class Contact {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-	
+
 }

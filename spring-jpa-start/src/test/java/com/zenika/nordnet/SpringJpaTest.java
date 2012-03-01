@@ -21,6 +21,8 @@ public class SpringJpaTest {
 	@Test public void springJpa() {
 		// TODO 06 créer et insérer un Contact
 		// TODO 07 vérifier que le Contact a bien été inséré
+		
+		// TODO Bonus : écrire un test qui utilise la configuration Java
 	}
 	
 }
