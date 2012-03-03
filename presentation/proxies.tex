@@ -95,16 +95,4 @@ repo.findAll(); // affiche ``findAll''
   \end{itemize}
  \end{itemize}
 
-\begin{javacode}
-InvocationHandler invocationHandler = new InvocationHandler() {      
-  public Object invoke(Object proxy, Method method, Object[] args)
-                                throws Throwable {
-    System.out.println(method.getName());
-    return null;
-  }
-};
-ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(..);
-repo.findAll(); // affiche ``findAll''
-\end{javacode}
-
 \end{frame}

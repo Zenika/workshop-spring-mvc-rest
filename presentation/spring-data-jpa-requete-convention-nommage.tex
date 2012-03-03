@@ -1,0 +1,103 @@
+\section{Requête par convention de nommage avec Spring Data JPA}
+
+\input{current-section.tex}
+
+\begin{frame}[fragile]
+ \frametitle{Ajout de méthodes sur une interface}
+ \begin{itemize}
+  \item Ajouter une méthode en suivant des conventions de nommage
+  \item Spring Data JPA construit la requête à l'exécution
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname);
+
+}  
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Convention pour les opérateurs}
+ \begin{itemize}
+  \item Support pour \code{and} et \code{or}
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  List<Contact> findByFirstnameAndLastname(String firstname, 
+                                           String lastname);
+
+}  
+ \end{javacode}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Conventions}
+ \begin{itemize}
+  \item \code{and} : \code{findByLastnameAndFirstname}
+  \item \code{or} : \code{findByLastnameOrFirstname}
+  \item \code{between} : \code{findByStartDateBetween}
+  \item \code{less than} : \code{findByAgeLessThan}
+  \item \code{greater than} : \code{findByAgeGreaterThan}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Conventions}
+ \begin{itemize}
+  \item \code{is null} : \code{findByAgeIsNull}
+  \item \code{is not null}, \code{not null} : \code{findByAge(Is)NotNull}
+  \item \code{like} : \code{findByFirstnameLike}
+  \item \code{not like} : \code{findByFirstnameNotLike}
+  \item \code{order by} : \code{findByAgeOrderByLastnameDesc}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Conventions}
+ \begin{itemize}
+  \item \code{not} : \code{findByLastnameNot}
+  \item \code{in} : \code{findByAgeIn}
+  \item \code{not in} : \code{findByAgeNotIn}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Un seul enregistrement retourné}
+ \begin{itemize}
+  \item Déclarer le type de l'entité en retour si un seul résultat est attendu
+  \item Retourne \code{null} si rien n'est trouvé
+  \item Lance une exception si plus d'un résultat est trouvé
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  Contact findByFirstnameAndLastname(String firstname, 
+                                           String lastname);
+
+}  
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Repository CRUD + méthodes par convention}
+ \begin{javacode}
+public interface ContactRepository extends JpaRepository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname);
+
+}  
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Repository avec seulement des méthodes par convention}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname);
+
+}  
+ \end{javacode}
+\end{frame}
