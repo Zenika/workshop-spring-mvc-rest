@@ -119,5 +119,7 @@
 		<module>spring-data-jpa-hello-world-solution</module>
 		<module>spring-data-jpa-crud-start</module>
 		<module>spring-data-jpa-crud-solution</module>
+		<module>spring-data-jpa-requete-convention-nommage-start</module>
+		<module>spring-data-jpa-requete-convention-nommage-solution</module>
 	</modules>
 </project>
