@@ -6,6 +6,7 @@ package com.zenika.nordnet;
 import javax.sql.DataSource;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -22,6 +23,8 @@ import com.zenika.nordnet.repository.ContactRepository;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/spring-data-jpa-requete-convention-nommage.xml")
+// TODO 01 décommenter @Ignore
+@Ignore
 public class SpringDataJpaRequeteConventionNommageTest {
 
 	@Autowired ContactRepository repo;
@@ -34,27 +37,27 @@ public class SpringDataJpaRequeteConventionNommageTest {
 		DatabasePopulatorUtils.execute(pop, ds);
 	}
 
-	// TODO 02 tester la méthode de recherche par nom (chercher la famille Dalton)
+	// TODO 03 tester la méthode de recherche par nom (chercher la famille Dalton)
 	
-	// TODO 04 tester la méthode de recherche par prénom et nom
+	// TODO 05 tester la méthode de recherche par prénom et nom
 	// tester une recherche avec un contact existant et un contact n'existant pas 
 	
-	// TODO 06 tester la méthode de recherche par ville (chercher les contacts de Los Angeles) 
+	// TODO 07 tester la méthode de recherche par ville (chercher les contacts de Los Angeles) 
 	
-	// TODO 08 tester la méthode de recherche par code postal
+	// TODO 09 tester la méthode de recherche par code postal
 	
-	// TODO 10 tester la méthode de recherche par code postal (nom sans ambiguité)
+	// TODO 11 tester la méthode de recherche par code postal (nom sans ambiguité)
 	
-	// TODO 12 tester la méthode de recherche partielle par code postal
+	// TODO 13 tester la méthode de recherche partielle par code postal
 	// (chercher les contacts de Los Angeles, c'est-à-dire dont le code postal commence par 9)
 	
-	// TODO 14 tester la méthode de recherche par plusieurs codes postaux
+	// TODO 15 tester la méthode de recherche par plusieurs codes postaux
 	// (chercher les contacts de Los Angeles)
 	
-	// TODO 16 tester la méthode de recherche par âge supérieur à
+	// TODO 17 tester la méthode de recherche par âge supérieur à
 	// (chercher les contacts ayant plus de 30 ans)
 	
-	// TODO 18 tester la méthode de recherche par une tranche d'âge
+	// TODO 19 tester la méthode de recherche par une tranche d'âge
 	// (chercher les contacts entre 20 et 30 ans)
 	
 

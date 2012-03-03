@@ -20,7 +20,6 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="generateDdl" value="true" />
 				<property name="database" value="H2" />
-				<property name="showSql" value="true" />
 			</bean>
 		</property>
 		<property name="packagesToScan" value="com.zenika.nordnet.model" />
