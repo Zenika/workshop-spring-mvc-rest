@@ -1,0 +1,99 @@
+\section{Repository custom avec Spring Data JPA}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Pourquoi un repository custom ?}
+ \begin{itemize}
+  \item Quand les méthodes CRUD ne suffisent pas
+  \item Quand les méthodes par convention de nommage ne suffisent pas
+  \item On peut alors implémenter notre propre repository
+  \item Spring Data JPA le combinera avec un repository dynamique
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Déclaration des interfaces}
+ \begin{javacode}
+public interface ContactRepositoryCustom {
+
+  List<Contact> findByExample(Contact contact);
+
+}
+
+public interface ContactRepository extends ContactRepositoryCustom, 
+                                           Repository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname);
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Implémentation custom}
+ \begin{javacode}
+public class ContactRepositoryImpl implements ContactRepositoryCustom {
+
+  @PersistenceContext private EntityManager em;
+
+  @Override
+  public List<Contact> findByExample(Contact contact) {
+    (...)
+  }
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Conventions}
+ \begin{itemize}
+  \item Interfaces et implémentation dans le même package
+  \item Classe d'implémentation doit finir par \code{Impl}
+  \item Le repository est détecté et combiné automatiquement
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Si le postfix par défaut ne convient pas}
+ \begin{itemize}
+  \item Postfix \code{Jpa} plutôt que \code{Impl}
+ \end{itemize}
+ \begin{xmlcode}
+<jpa:repositories base-package="com.zenika.nordnet.repository" 
+                  repository-impl-postfix="Jpa" /> 
+ \end{xmlcode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Travailler repository par repository}
+ \begin{itemize}
+  \item Réglage avec \code{<jpa:repository />}
+ \end{itemize}
+ \begin{xmlcode}
+<jpa:repositories base-package="com.zenika.nordnet.repository">
+  <jpa:repository id="contactRepository" 
+                  repository-impl-postfix="Jpa"/>
+</jpa:repositories>
+ \end{xmlcode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Portée de \code{<jpa:repository />}}
+ \begin{itemize}
+  \item \code{<jpa:repository />} désactive la détection automatique des implémentations custom
+  \item Tous les repositories custom doivent être déclarés explicitement
+ \end{itemize}
+ \begin{xmlcode}
+<jpa:repositories base-package="com.zenika.nordnet.repository">
+  <jpa:repository id="contactRepository" 
+                  repository-impl-postfix="Jpa" />
+  <jpa:repository id="addressRepository" 
+                  custom-impl-ref="addressRepositoryCustom" />
+</jpa:repositories>
+
+<bean id="addressRepositoryCustom" 
+      class="c.z.nordnet.repository.JpaAddressRepositoryCustom" />
+ \end{xmlcode}
+\end{frame}
