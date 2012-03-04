@@ -125,5 +125,7 @@
 		<module>spring-data-jpa-requete-convention-nommage-solution</module>
 		<module>spring-data-jpa-repository-custom-start</module>
 		<module>spring-data-jpa-repository-custom-solution</module>
+		<module>spring-data-jpa-requete-jpql-start</module>
+		<module>spring-data-jpa-requete-jpql-solution</module>
 	</modules>
 </project>
