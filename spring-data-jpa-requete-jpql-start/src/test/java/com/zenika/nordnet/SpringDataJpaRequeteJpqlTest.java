@@ -21,7 +21,7 @@ import com.zenika.nordnet.repository.ContactRepository;
  * @author acogoluegnes
  * 
  */
-// TODO enlever l'annotation @Ignore du test
+// TODO 02 enlever l'annotation @Ignore du test
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/spring-data-jpa-requete-jpql.xml")
@@ -37,16 +37,16 @@ public class SpringDataJpaRequeteJpqlTest {
 		DatabasePopulatorUtils.execute(pop, ds);
 	}
 
-	// TODO tester findByLastname, bien vérifier qu'une seule requête SQL est exécutée
+	// TODO 03 tester findByLastname, bien vérifier qu'une seule requête SQL est exécutée
 	
 	
-	// TODO tester findByFirstnameAndLastname, bien vérifier qu'une seule requête SQL est exécutée
+	// TODO 05 tester findByFirstnameAndLastname, bien vérifier qu'une seule requête SQL est exécutée
 	
 	
-	// TODO tester findByAgeGreaterThan, bien vérifier qu'une seule requête SQL est exécutée
+	// TODO 07 tester findByAgeGreaterThan, bien vérifier qu'une seule requête SQL est exécutée
 
 
-	// TODO setNewAddress
-	// cas de test : les frères Dalton vont tous habiter chez leur mère
+	// TODO 09 tester setNewAddress
+	// cas de test : les frères Dalton retournent habiter chez leur mère !
 	
 }
