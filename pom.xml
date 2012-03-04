@@ -110,6 +110,8 @@
 		<logback.version>1.0.0</logback.version>
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.6</maven.compiler.source>                                        
+        <maven.compiler.target>1.6</maven.compiler.target>   
 	</properties>
 
 	<modules>
@@ -121,5 +123,7 @@
 		<module>spring-data-jpa-crud-solution</module>
 		<module>spring-data-jpa-requete-convention-nommage-start</module>
 		<module>spring-data-jpa-requete-convention-nommage-solution</module>
+		<module>spring-data-jpa-repository-custom-start</module>
+		<module>spring-data-jpa-repository-custom-solution</module>
 	</modules>
 </project>
