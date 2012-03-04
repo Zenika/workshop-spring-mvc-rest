@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 
 /**
  * 
@@ -16,10 +15,6 @@ import javax.persistence.NamedQuery;
  * 
  */
 @Entity
-@NamedQuery(
-	name = "Contact.findByAgeGreaterThan",
-	query = "from Contact c join fetch c.address where c.age > ?1"
-)
 public class Contact {
 
 	@Id

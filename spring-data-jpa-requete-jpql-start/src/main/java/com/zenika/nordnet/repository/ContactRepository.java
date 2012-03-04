@@ -34,7 +34,7 @@ public interface ContactRepository extends Repository<Contact,Long> {
 			@Param("firstname") String firstname, 
 			@Param("lastname") String lastname);
 
-	// TODO 06 implémenter cette requête en JPQL avec l'annotation appropriée
+	// TODO 06 implémenter cette requête en JPQL en tant que requête nommée, sur la classe d'entité
 	// Contraintes :
 	//   - l'addresse de chaque contact doit être aussi récupérée
 	//   - une seule requête SQL doit être envoyée à la base de données
