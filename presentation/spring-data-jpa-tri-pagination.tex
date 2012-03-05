@@ -1,0 +1,140 @@
+\section{Tri et pagination}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Principes}
+ \begin{itemize}
+  \item Spring DATA JPA peut trier et paginer des données
+  \item Il suffit de rajouter des paramètres dans les méthodes
+  \item Rajoute de la flexibilité aux méthodes
+  \begin{itemize}
+   \item Pas d'instruction de tri en dur dans les requêtes JPQL
+  \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tri avec \code{Sort}}
+ \begin{itemize}
+  \item Ajouter un paramètre de type \code{Sort} à la méthode
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname, Sort sort);
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tri avec \code{Sort}}
+ \begin{itemize}
+  \item Lors de l'appel, spécifier
+  \begin{itemize}
+   \item Un ordre avec l'énumération \code{Direction}, \code{ASC} ou \code{DESC}
+   \item Une ou des propriétés
+  \end{itemize}
+ \end{itemize}
+ \begin{javacode}
+repo.findByLastname("Dalton",new Sort(Direction.DESC,"firstname"));
+repo.findByLastname("Dalton",new Sort("firstname")); // ASC par defaut
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Pagination avec \code{Pageable}}
+ \begin{itemize}
+  \item Ajouter un paramètre de type \code{Pageable} à la méthode
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  List<Contact> findByLastname(String lastname, Pageable pageable);
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Pagination avec \code{Pageable}}
+ \begin{itemize}
+  \item Utiliser \code{PageRequest} comme implémentation de \code{Pageable}
+  \item Nécessité de passer un \code{Sort} pour des pages cohérentes
+ \end{itemize}
+ \begin{javacode}
+PageRequest pageable = new PageRequest(0, 10,new Sort("firstname"));
+List<Contact> contacts = repo.findByLastname("Dalton",pageable);
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer une \code{Page}}
+ \begin{itemize}
+  \item Retourner une \code{Page<T>}
+  \item Donne des informations sur les données et leur pagination
+  \item Implique une requête \code{count} à chaque appel
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  Page<Contact> findByLastname(String lastname, Pageable pageable);
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Exploiter la \code{Page}}
+ \begin{itemize}
+  \item Informations disponibles :
+  \begin{itemize}
+   \item Les enregistrements !
+   \item Numéro de la page
+   \item Nombre d'éléments total
+   \item Première page ou dernière page
+   \item etc.
+  \end{itemize}
+ \end{itemize}
+ \begin{javacode}
+PageRequest pageable = new PageRequest(0, 10,new Sort("firstname"));
+Page<Contact> page = repo.findByLastname("Dalton",pageable);
+List<Contact> contacts = page.getContent();
+if(page.isFirstPage()) { (...) }
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{Sort}, \code{Page} et \code{Query}}
+ \begin{itemize}
+  \item \code{Query} peut cohabiter avec \code{Tri} et \code{Page}
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  @Query("from Contact c join fetch a.address where c.firstname = ?1")
+  List<Contact> findByLastname(String lastname, Sort sort);
+  
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{Page} et \code{Query}}
+ \begin{itemize}
+  \item Possibilité de préciser sa requête de \code{count}
+ \end{itemize}
+ \begin{javacode}
+public interface ContactRepository extends Repository<Contact,Long> {
+
+  @Query(
+    value="from Contact c join fetch a.address where c.firstname = ?1",
+    countQuery="select count(*) from Contact c where c.firstname = ?1"
+  )
+  Page<Contact> findByLastname(String lastname, Pageable pageable);
+  
+}
+ \end{javacode}
+\end{frame}
