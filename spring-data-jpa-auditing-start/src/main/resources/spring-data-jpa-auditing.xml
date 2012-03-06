@@ -9,9 +9,8 @@
 
 	<jpa:repositories base-package="com.zenika.nordnet.repository" />
 	
-	<jpa:auditing auditor-aware-ref="auditorAware" />
+	<!-- TODO 03 activer l'auditing -->
 	
-	<bean id="auditorAware" class="com.zenika.nordnet.model.SimpleAuditorAware" />
 	
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
