@@ -1,0 +1,192 @@
+\section{Criteria}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Criteria dans JPA 2.0}
+ \begin{itemize}
+  \item Spring JPA 2.0 propose une API Criteria
+  \item Une alternative au JPQL
+  \item Type-safe si le méta-modèle est généré
+  \begin{itemize}
+   \item Pas le cas dans les exemples suivants
+  \end{itemize}
+  \item Type-safe mais complexe et verbeuse...
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+ \frametitle{Une requête Criteria sur \code{Contact}}
+
+ \begin{itemize}
+  \item Initialisation de la requête
+ \end{itemize}
+
+ \begin{javacode}
+CriteriaBuilder builder = em.getCriteriaBuilder();
+CriteriaQuery<Contact> query = builder.createQuery(Contact.class);
+Root<Contact> root = query.from(Contact.class);
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Une requête Criteria sur \code{Contact}}
+
+ \begin{itemize}
+  \item Création d'un prédicat
+  \item L'utilisation du méta-modèle peut rendre le prédicat type-safe
+ \end{itemize}
+
+ \begin{javacode}
+Predicate outlaws = builder.equal(root.get("lastname"),"Dalton");
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Une requête Criteria sur \code{Contact}}
+
+ \begin{itemize}
+  \item Exécution de la requête
+ \end{itemize}
+
+ \begin{javacode}
+List<Contact> cs = em.createQuery(query.select(root)).getResultList();
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Combiner les prédicats}
+
+ \begin{javacode}
+Predicate p1 = (...);
+Predicate p2 = (...);
+query.where(builder.and(p1,p2));
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Une requête Criteria sur \code{Contact}}
+
+ \begin{javacode}
+CriteriaBuilder builder = em.getCriteriaBuilder();
+CriteriaQuery<Contact> query = builder.createQuery(Contact.class);
+Root<Contact> root = query.from(Contact.class);
+    
+Predicate outlaws = builder.equal(root.get("lastname"),"Dalton");
+Predicate p2 = (...);
+query.where(builder.and(outlaws,p2));
+List<Contact> cs = em.createQuery(query.select(root)).getResultList();
+ \end{javacode}
+\end{frame}
+
+\begin{frame}
+ \frametitle{\code{Specification} de Spring Data JPA}
+
+ \begin{itemize}
+  \item \code{Specification} permet
+  \begin{itemize}
+   \item la réutilisation des \code{Predicate}s
+   \item la combinaison des \code{Predicate}s
+  \end{itemize}
+  \item Il faut toujours écrire les \code{Predicate}s !
+  \item Elimine une partie du code ``boilerplate''
+  \item Pattern Domain Driven Design
+  \begin{itemize}
+   \item \url{http://domaindrivendesign.org/node/87}
+  \end{itemize}
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Une classe centralise les \code{Specification}s}
+
+ \begin{javacode}
+package com.zenika.nordnet.repository;
+
+import org.springframework.data.jpa.domain.Specification;
+import com.zenika.nordnet.model.Contact;
+
+public abstract class ContactSpecs {
+
+  public static Specification<Contact> outlaws() {
+    (...)
+  }
+  
+  public static Specification<Contact> inMidThirties() {
+    (...)
+  }
+  
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Le repository utilise les \code{Specification}s}
+
+ \begin{javacode}
+List<Contact> contacts = repo.findAll(outlaws());
+ \end{javacode}
+ 
+ \begin{itemize}
+  \item Voyons comment faire !
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Implémenter une \code{Specification}}
+
+ \begin{javacode}
+public abstract class ContactSpecs {
+
+  public static Specification<Contact> outlaws() {
+    return new Specification<Contact>() {
+      @Override
+      public Predicate toPredicate(Root<Contact> root,
+               CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return cb.equal(root.get("lastname"), "Dalton");
+      }
+    };
+  }
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Rendre le repository \code{Specification}-friendly}
+
+ \begin{itemize}
+  \item Etendre l'interface \code{JpaSpecificationExecutor<T>}
+  \item Propose les méthodes à base de \code{Specification}s
+ \end{itemize}
+
+ \begin{javacode}
+public interface ContactRepository 
+	    extends Repository<Contact,Long>,
+	    JpaSpecificationExecutor<Contact> {
+
+
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Utiliser les \code{Specification}s}
+
+ \begin{javacode}
+import static org.springframework.data.jpa.domain.Specifications.*;
+import static com.zenika.nordnet.repository.ContactSpecs.*;
+(...)
+// avec import statique de ContactSpecs
+List<Contact> contacts = repo.findAll(outlaws());
+// avec import statique de Specifications
+List<Contact> contacts = repo.findAll(
+  where(outlaws()).and(inMidThirties())
+);
+ \end{javacode}
+
+\end{frame}
