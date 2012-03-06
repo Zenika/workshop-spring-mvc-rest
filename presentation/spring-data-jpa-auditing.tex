@@ -1,0 +1,173 @@
+\section{Auditing}
+
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Problématique}
+ \begin{itemize}
+  \item Savoir qui a créé/modifié une entité
+  \item Savoir quand l'entité a été créée/modifiée
+  \item Spring Data JPA propose d'auditer les entités automatiquement
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Déclarer le listener dans \code{/META-INF/orm.xml}}
+
+ \begin{xmlcode}
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings>
+
+  <persistence-unit-metadata>
+    <persistence-unit-defaults>
+      <entity-listeners>
+        <entity-listener 
+          class="o.s.data.jpa.domain.support.AuditingEntityListener" />
+      </entity-listeners>
+    </persistence-unit-defaults>
+  </persistence-unit-metadata>
+
+</entity-mappings>
+ \end{xmlcode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Avoir une classe ``auditor''}
+
+ \begin{itemize}
+  \item Généralement le \code{User} de l'application
+ \end{itemize}
+
+ \begin{javacode}
+@Entity
+public class User {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
+
+  private String login;
+  
+  (...)
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Les entités à auditer doivent être \code{Auditable}}
+
+ \begin{javacode}
+public interface Auditable<U, ID extends Serializable> 
+                 extends Persistable<ID> {
+
+  U getCreatedBy();
+
+  void setCreatedBy(final U createdBy);
+  
+  DateTime getCreatedDate();
+
+  void setCreatedDate(final DateTime creationDate);
+
+  U getLastModifiedBy();
+
+  void setLastModifiedBy(final U lastModifiedBy);
+  
+  DateTime getLastModifiedDate();
+
+  void setLastModifiedDate(final DateTime lastModifiedDate);
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Rendre une entité \code{Auditable}}
+
+ \begin{itemize}
+  \item Soit ajouter les champs soi-même
+ \end{itemize}
+
+ \begin{javacode}
+@Entity
+public class Contact implements Auditable<User,Long> { 
+  (...) 
+  @ManyToOne
+  private U createdBy;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createdDate;
+
+  @ManyToOne
+  private U lastModifiedBy;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date lastModifiedDate;  
+  (...)   
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Rendre une entité \code{Auditable}}
+
+ \begin{itemize}
+  \item Soit utiliser une classe fournie par Spring Data JPA
+ \end{itemize}
+
+ \begin{javacode}
+@Entity
+public class Contact extends AbstractAuditable<User, Long> {
+ 
+ (...)
+  
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Fournir l'utilisateur en cours}
+
+ \begin{itemize}
+  \item Implémenter \code{AuditorAware}
+  \item Utilise généralement le contexte de sécurité
+ \end{itemize}
+
+ \begin{javacode}
+public class SecurityAuditorAware implements AuditorAware<User> {
+
+  @Override
+  public User getCurrentAuditor() {
+    return SecurityContext.getCurrentUser();
+  }
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Activer l'auditing}
+
+ \begin{itemize}
+  \item Déclarer le bean \code{AuditorAware}
+  \item L'enregistrer auprès de Spring Data JPA
+ \end{itemize}
+
+ \begin{xmlcode}
+<bean id="auditorAware" 
+      class="com.zenika.nordnet.model.SecurityAuditorAware" />
+
+<jpa:auditing auditor-aware-ref="auditorAware" />
+ \end{xmlcode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Enjoy!}
+
+ \begin{javacode}
+Contact contact = new Contact();
+contact.setFirstname("Joe");
+contact.setLastname("Dalton");
+// l'utilisateur doit \^etre positionn\'e sur l'AuditorAware !
+contactRepository.save(contact);
+// lastModifiedBy, lastModifiedDate, etc. positionn\'es !
+ \end{javacode}
+\end{frame}
