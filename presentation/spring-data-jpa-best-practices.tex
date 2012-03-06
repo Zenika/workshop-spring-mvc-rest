@@ -1,0 +1,119 @@
+\section{Best practices}
+\input{current-section.tex}
+
+\subsection{Transaction}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Où démarquer les transactions ?}
+ \begin{itemize}
+  \item Transactions démarquées généralement sur la couche métier
+  \item Une méthode métier = un cas d'utilisation
+  \item Cas d'utilisation = opération atomique
+  \item Ce n'est pas une règle absolue
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Transaction au niveau de la couche métier}
+ 
+ \begin{itemize}
+  \item Penser ACID...
+ \end{itemize}
+
+ \begin{javacode}
+@Service
+@Transactional
+public class ContactServiceImpl implements ContactService {
+ 
+  @Autowired ContactRepository repo;
+  
+  public Contact create(Contact contact) {
+    if(repo.exists(contact)) {
+      throw new AlreadyExistingContactException();
+    } else {
+      repo.save(contact);
+    }
+    return contact;
+  }
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Transaction au niveau de la couche repository}
+ 
+ \begin{itemize}
+  \item Chaque méthode de repository est transactionnelle
+  \item Fonctionnel pour des applications purement CRUD
+  \item Catastrophique pour d'autres applications...
+ \end{itemize}
+
+ \begin{javacode}
+// dangereux si appel\'e en-dehors d'une transaction !
+for(Contact contact : contacts} {
+  if(!repo.exists(contact)) {      
+    repo.save(contact);
+  }
+}
+ \end{javacode}
+\end{frame}
+
+\subsection{Dépendances entre couches}
+\input{current-section.tex}
+
+\begin{frame}[fragile]
+ \frametitle{Quand toutes les couches dépendent de Spring Data}
+
+ \begin{javacode}
+@Service
+@Transactional
+public class ContactServiceImpl implements ContactService {
+ 
+  @Autowired ContactRepository repo;
+  
+  public Page getPage(Contact modele,Pageable pageable) {
+    return repo.findByFirstnameAndLastname(
+      modele.getFirstname(),modele.getLastname(),
+      pageable
+    );
+  }
+
+}
+ \end{javacode}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Qui passe à travers les couches ?}
+
+ \begin{itemize}
+  \item Typiquement, l'API de tri et de pagination
+  \begin{itemize}
+   \item \code{Sort}, \code{Page}, \code{Pageable}, \code{Pageable}
+  \end{itemize}
+  \item Les API de criteria/DSL
+  \begin{itemize}
+   \item JPA 2.0, Querydsl
+  \end{itemize}
+ \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{C'est grave ?}
+
+ \begin{itemize}
+  \item Les dépendances vers Spring Data peuvent être tolérées
+  \begin{itemize}
+   \item package \code{org.springframework.data.domain}
+  \end{itemize}
+  \item Critères à prendre en compte 
+  \begin{itemize}
+   \item testabilité de la couche métier avec des mock objects
+   \item trop de couplage avec une technologie
+  \end{itemize}
+  \item Tout ce que nous avons vu ne présente pas un couplage fort
+ \end{itemize}
+ 
+\end{frame}
