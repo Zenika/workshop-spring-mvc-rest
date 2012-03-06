@@ -20,8 +20,8 @@ public class ContactRepositoryImpl implements ContactRepositoryCustom {
 	
 	@Override
 	public List<Contact> findOutlawsInMidThirties() {
-		// TODO implémenter cette méthode avec l'API Criteria de JPA 2.0
-		// il s'agit de récupérer les membres de la famille Dalton qui ont entre 30 et 40
+		// TODO 01 implémenter cette méthode avec l'API Criteria de JPA 2.0
+		// il s'agit de récupérer les membres de la famille Dalton qui ont entre 30 et 40 ans
 		
 		return null;
 	}

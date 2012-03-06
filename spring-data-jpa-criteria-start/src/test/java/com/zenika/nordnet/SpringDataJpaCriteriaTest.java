@@ -21,7 +21,7 @@ import com.zenika.nordnet.repository.ContactRepository;
  * @author acogoluegnes
  * 
  */
-// TODO enlever @Ignore du test
+// TODO 02 enlever @Ignore du test
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/spring-data-jpa-criteria.xml")
@@ -37,9 +37,9 @@ public class SpringDataJpaCriteriaTest {
 		DatabasePopulatorUtils.execute(pop, ds);
 	}
 
-	// TODO tester la méthode findOutlawsInMidThirties 
+	// TODO 03 tester la méthode findOutlawsInMidThirties 
 	
-	// TODO tester les spécifications
+	// TODO 08 tester les spécifications
 	// tests : outlaws seule, inMidThirties seule, les deux combinées avec un AND
 	
 }
