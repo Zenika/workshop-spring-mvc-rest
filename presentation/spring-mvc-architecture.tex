@@ -1,0 +1,109 @@
+\section{Architecture}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Beans d'infrastructure}
+ \begin{itemize}
+  \item La \code{DispatcherServlet} coordonne des beans d'infrastructure
+  \item Valeurs par défaut, tout est surchargeable
+  \item Changer ces beans change le comportement de Spring MVC
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Beans d'infrastructure principaux}
+ 
+ \begin{itemize}
+  \item Ils sont trois
+  \item \code{HandlerMapping}, \code{HandlerAdapter}, \code{ViewResolver}
+  \item Ils participent au pattern MVC
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Beans d'infrastructure principaux}
+ 
+ \begin{javacode}
+// dans la DispatcherServlet (pseudo-code)
+
+// quel contr\^oleur pour cette requ\^ete ?
+Object handler = handlerMapping.getHandler(request);
+// appeler la bonne m\'ethode du contr\^oleur, avec les bons param\`etres
+ModelAndView mav = handlerAdapter.handle(request,response,handler);
+// trouver la vue \`a rendre
+View view = viewResolver.resolveViewName(
+  mav.getViewName(),request.getLocale()
+);
+// effectuer le rendu
+view.render(mav.getModel(),request,response);
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Chaîne de beans d'infrastructure}
+ 
+ \begin{itemize}
+  \item Les beans d'infrastructure sont généralement organisés en chaîne
+  \begin{itemize}
+   \item Le cas pour \code{HandlerMapping}, \code{HandlerAdapter}, \code{ViewResolver}
+  \end{itemize}
+  \item Ils sont consultés, le premier qui répond gagne
+  \begin{itemize}
+   \item Répondre = retourner autre chose que \code{null}
+  \end{itemize}
+  
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration par défaut}
+ 
+ \begin{itemize}
+  \item \code{DispatcherServlet.properties} 
+  \begin{itemize}
+   \item dans \code{spring-webmvc.jar}
+   \item package \code{org.springframework.web.servlet}
+  \end{itemize}  
+ \end{itemize} 
+
+ \begin{textcode*}{fontsize=\tiny}
+org.springframework.web.servlet.LocaleResolver=\
+  org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
+
+org.springframework.web.servlet.ThemeResolver=\
+  org.springframework.web.servlet.theme.FixedThemeResolver
+
+org.springframework.web.servlet.HandlerMapping=\
+  org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
+  org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
+
+org.springframework.web.servlet.HandlerAdapter=\
+  org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,\
+  org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,\
+  org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter
+  
+(...)
+ \end{textcode*}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Surcharger un bean d'infrastructure}
+ 
+ \begin{itemize}
+  \item Déclarer un bean du type correspondant
+  \item Remplace la configuration par défaut
+  \item Ex. : déclarer un \code{HandlerAdapter} remplace les 3 par défaut
+ \end{itemize} 
+
+ \begin{xmlcode}
+<bean class="o.s.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/WEB-INF/views" />
+  <property name="suffix" value=".jsp" />
+</bean>
+ \end{xmlcode}
+
+\end{frame}
