@@ -1,0 +1,182 @@
+\section{Spring MVC}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Spring MVC en deux mots}
+ \begin{itemize}
+  \item Framework pour applications web ``classiques''
+  \item Support pour web services REST
+   \begin{itemize}
+    \item Support serveur et client (\code{RestTemplate})
+   \end{itemize}
+  \item Dépendances : Spring et API Servlet
+  \item Très flexible (beaucoup de points d'extension)
+  \item Base technique pour d'autres frameworks
+  \begin{itemize}
+   \item Spring Web Flow, Grails
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{\code{DispatcherServlet}}
+ 
+ \begin{itemize}
+  \item Le coeur de Spring MVC
+  \item Coordonne des composants d'infrastructure
+  \item Démarre son propre contexte Spring, il contient :
+  \begin{itemize}
+   \item Les contrôleurs de l'application
+   \item Des beans d'infrastructure
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Déclarer une \code{DispatcherServlet} dans le \code{web.xml}}
+ 
+ \begin{xmlcode}
+<servlet>
+  <servlet-name>spring-mvc</servlet-name>
+  <servlet-class>
+    org.springframework.web.servlet.DispatcherServlet
+  </servlet-class>
+  <init-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring-mvc-servlet.xml</param-value>
+  </init-param>
+  <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+  <servlet-name>spring-mvc</servlet-name>
+  <url-pattern>/zen-contact/*</url-pattern>
+</servlet-mapping>
+ \end{xmlcode}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Fichier Spring de la \code{DispatcherServlet}}
+ 
+  \begin{itemize}
+   \item Si pas de fichier précisé, utilise un chemin par défaut
+   \item Convention : \code{/WEB-INF/\$\{servlet-name\}-servlet.xml}
+  \end{itemize}
+  
+ \begin{xmlcode}
+<!-- utilise my-app-servlet.xml -->
+<servlet>
+  <servlet-name>my-app</servlet-name>
+  <servlet-class>
+    org.springframework.web.servlet.DispatcherServlet
+  </servlet-class>  
+</servlet>
+ \end{xmlcode}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Contrôleur ``Hello World''}
+ 
+  \begin{itemize}
+   \item Les contrôleurs sont des POJO annotés
+  \end{itemize}
+  
+ \begin{javacode}
+@Controller // indique \`a Spring que c'est un contr\^oleur
+public class HelloWorldController {
+
+  @RequestMapping("/hello") // quel URL ?
+  @ResponseBody // mettre l'objet retourn\'e dans le corps de la r\'eponse
+  public String hello() {
+    return "Hello World!";
+  }
+  
+}
+ \end{javacode}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Les contrôleurs sont des beans Spring}
+ 
+  \begin{itemize}
+   \item Il faut bien déclarer les contrôleurs dans Spring
+   \item Une solution est le component scanning
+   \begin{itemize}
+    \item Déclarations en XML ou en Java fonctionnent aussi
+   \end{itemize}
+  \end{itemize}
+  
+ \begin{xmlcode}
+<context:component-scan base-package="com.zenika.nordnet.web" />
+ \end{xmlcode}
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Root application context}
+ 
+  \begin{itemize}
+   \item Contexte Spring de l'application web
+   \item Indépendant de Spring MVC
+   \item Contient généralement
+   \begin{itemize}
+    \item Services, repositories
+    \item \code{DataSource}, transaction manager
+   \end{itemize}
+  \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Déclarer le root application context dans le \code{web.xml}}
+  
+ \begin{xmlcode}
+<context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>
+    /WEB-INF/applicationContext.xml
+  </param-value>
+</context-param>
+
+<listener>
+  <listener-class>
+    org.springframework.web.context.ContextLoaderListener
+  </listener-class>
+</listener>
+ \end{xmlcode}
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Root application context et \code{DispatcherServlet}}
+ 
+ \begin{itemize}
+  \item La \code{DispatcherServlet} se branche sur le root application context
+  \begin{itemize}
+   \item S'il a été déclaré
+  \end{itemize}
+  \item Relation parent-enfant entre les contextes Spring
+  \item Beans du root contexte visibles pour les beans de la \code{DispatcherServlet}
+  \begin{itemize}
+   \item Pas l'inverse
+  \end{itemize}
+ \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Root application context et \code{DispatcherServlet}}
+ 
+ \begin{xmlcode}
+<!-- Dans le contexte de la DispatcherServlet -->
+<bean class="com.zenika.nordnet.web.HelloWorldController">
+  <!-- contactService est d\'eclar\'e dans le root context -->
+  <property name="contactService" 
+            ref="contactService />
+</bean>
+ \end{xmlcode}
+ 
+\end{frame}
