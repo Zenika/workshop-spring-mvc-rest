@@ -1,0 +1,125 @@
+\section{Application web}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Spring MVC et les applications web}
+ \begin{itemize}
+  \item 1 modèle de programmation, plusieurs types d'applications
+  \item Application web ``classique'' : vue générée coté serveur
+   \begin{itemize}
+    \item Spring MVC = équivalent de Struts, JSF, Wicket, etc.
+   \end{itemize}
+  \item Application web REST : ne gère pas la vue
+  \begin{itemize}
+   \item Spring MVC ne retourne que des données
+   \item Présentation gérée coté client (ex. : JQuery)
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Contrôleur application web}
+ 
+ \begin{itemize}
+  \item Remplit un \code{Model} de données
+  \item Indique quelle vue doit être rendue
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Contrôleur application web}
+ 
+ \begin{javacode}
+@Controller
+public class ContactController {
+
+  @RequestMapping("/contact")
+  public String contact(Model model) { // demande un Model vide
+    Contact contact = (...); // chargement depuis la BD
+    model.addAttribute(contact); // pour la vue
+    return "/WEB-INF/views/contact.jsp"; // la vue \`a utiliser
+  }
+  
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{La vue}
+ 
+ \begin{itemize}
+  \item Plusieurs technologies supportées : JSP, Freemarker, Velocity
+  \item JSP le plus courant
+ \end{itemize} 
+ 
+ \begin{xmlcode}
+<html>
+  <head>
+    <title>Spring MVC</title>
+  </head>
+  <body>
+  ${contact.id} <br />
+  ${contact.firstname} <br />
+  ${contact.lastname} <br />
+  </body>
+</html>
+ \end{xmlcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Couplage contrôleur/vue}
+
+ \begin{itemize}
+  \item Le contrôleur connait le chemin de la vue
+  \item C'est un couplage fort (chemin + technologie)
+ \end{itemize}
+
+ \begin{javacode}
+@RequestMapping("/contact")
+public String contact(Model model) {
+  (...)
+  return "/WEB-INF/views/contact.jsp";
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Découplage contrôleur/vue}
+
+ \begin{itemize}
+  \item Le contrôleur peut utiliser un nom logique
+  \item Couplage lâche
+  \item Il faut déclarer un \code{ViewResolver}
+ \end{itemize}
+
+ \begin{javacode}
+@RequestMapping("/contact")
+public String contact(Model model) {
+  (...)
+  return "contact";
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Découplage contrôleur/vue}
+
+ \begin{itemize}
+  \item Utiliser \code{InternalResourceViewResolser}
+  \item Configurer un préfixe et un suffixe
+  \item Ils ``décoreront'' le nom retourné par le contrôleur
+ \end{itemize}
+
+ \begin{xmlcode}
+<bean class="o.s.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/WEB-INF/views/" />
+  <property name="suffix" value=".jsp" />
+</bean>
+ \end{xmlcode}
+
+\end{frame}
