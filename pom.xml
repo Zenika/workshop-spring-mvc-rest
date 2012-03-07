@@ -138,6 +138,7 @@
 		<jodatime.version>1.5.2</jodatime.version>
 		<junit.version>4.10</junit.version>
 		<jetty.version>6.1.26</jetty.version>
+		<tomcat.version>6.0.35</tomcat.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -168,5 +169,7 @@
 		<module>spring-data-jpa-best-practices-solution</module>
 		<module>spring-data-mvc-hello-world-start</module>
 		<module>spring-data-mvc-hello-world-solution</module>
+		<module>spring-data-mvc-application-web-start</module>
+		<module>spring-data-mvc-application-web-solution</module>
 	</modules>
 </project>
