@@ -26,7 +26,7 @@ import com.zenika.nordnet.repository.UserRepository;
  * @author acogoluegnes
  * 
  */
-// TODO enlever @Ignore du test
+// TODO 04 enlever @Ignore du test
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/spring-data-jpa-auditing.xml")
@@ -54,25 +54,25 @@ public class SpringDataJpaAuditingTest {
 		modifier.setLogin("man");
 		userRepository.save(modifier);
 	
-		// TODO 04 positionner "creator" comme utilisateur courant
+		// TODO 05 positionner "creator" comme utilisateur courant
 		Contact contact = new Contact();
 		contact.setFirstname("Joe");
 		contact.setLastname("Dalton");
-		// TODO 05 sauvegarder le contact
+		// TODO 06 sauvegarder le contact
 		
-		// TODO 06 récupérer le contact avec son identifiant
+		// TODO 07 récupérer le contact avec son identifiant
 		
-		// TODO 07 vérifier que createdBy et lastModifiedBy sont positionnés sur "creator"
+		// TODO 08 vérifier que createdBy et lastModifiedBy sont positionnés sur "creator"
 		// (faire une vérification par identifiant)
 		
 		
-		// TODO 08 positionner "modifier" comme utilisateur courant
+		// TODO 09 positionner "modifier" comme utilisateur courant
 		
-		// TODO 09 mettre à jour le prénom du contact (appeler un setter puis repo.save())
+		// TODO 10 mettre à jour le prénom du contact (appeler un setter puis repo.save())
 		
-		// TODO 10 récupérer le contact avec son identifiant
+		// TODO 11 récupérer le contact avec son identifiant
 
-		// TODO 11 vérifier que createdBy et lastModifiedBy sont respectivement positionnés sur "creator" et "modifier"
+		// TODO 12 vérifier que createdBy et lastModifiedBy sont respectivement positionnés sur "creator" et "modifier"
 	}
 	
 		
