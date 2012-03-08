@@ -178,6 +178,7 @@
 		<module>spring-data-mvc-hello-world-solution</module>
 		<module>spring-data-mvc-application-web-start</module>
 		<module>spring-data-mvc-application-web-solution</module>
+		<module>spring-data-mvc-rest-start</module>
 		<module>spring-data-mvc-rest-solution</module>
 	</modules>
 </project>

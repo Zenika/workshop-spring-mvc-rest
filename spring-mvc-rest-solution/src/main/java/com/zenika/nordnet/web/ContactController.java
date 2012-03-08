@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,16 +34,31 @@ public class ContactController {
 	
 	@Autowired ContactRepository contactRepository;
 
-	@RequestMapping("/contacts/{id}")
-	@ResponseBody 
-	public ResponseEntity<Contact> contact(@PathVariable Long id) {		
+	// gestion des erreurs solution 1
+	@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+	@ResponseBody
+	public Contact contact(@PathVariable Long id) {		
 		Contact contact = contactRepository.findOne(id);
-		ResponseEntity<Contact> response = new ResponseEntity<Contact>(
-			contact,
-			contact == null ? HttpStatus.NOT_FOUND : HttpStatus.OK
-		);
-		return response;
+		if(contact == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		return contact;
 	}
+	
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public void notFound() { }
+
+	// gestion des erreurs solution 2
+//	@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+//	public ResponseEntity<Contact> contact(@PathVariable Long id) {		
+//		Contact contact = contactRepository.findOne(id);
+//		ResponseEntity<Contact> response = new ResponseEntity<Contact>(
+//			contact,
+//			contact == null ? HttpStatus.NOT_FOUND : HttpStatus.OK
+//		);
+//		return response;
+//	}
 	
 	@RequestMapping(value="/contacts",method=RequestMethod.GET)
 	@ResponseBody 
