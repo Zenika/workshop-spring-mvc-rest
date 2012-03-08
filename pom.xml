@@ -180,5 +180,7 @@
 		<module>spring-data-mvc-application-web-solution</module>
 		<module>spring-data-mvc-rest-start</module>
 		<module>spring-data-mvc-rest-solution</module>
+		<module>spring-mvc-content-negotiation-start</module>
+		<module>spring-mvc-content-negotiation-solution</module>
 	</modules>
 </project>
