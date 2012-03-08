@@ -1,0 +1,132 @@
+\section{Principes de REST}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{REST}
+ \begin{itemize}
+  \item Representational State Transfer
+  \item Un style d'architecture
+  \item Une façon de faire communiquer des applications
+  \item Utiliser HTTP comme un protocole applicatif
+  \begin{itemize}
+   \item Pas juste comme un protocole de transport
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Principes}
+ 
+ \begin{itemize}
+  \item Ressources identifiées
+  \item Interface uniforme
+  \item Sans état
+  \item Représentation
+  \item Hypermedia
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Ressources identifiées}
+ 
+ \begin{itemize}
+  \item Tout est ressource, chaque ressource a une addresse
+  \item L'adresse est une URI
+  \item Bien : http://somehost.com/zen/contacts/1
+  \item Pas bien http://somehost.com/zen/contacts?id=1
+  \begin{itemize}
+   \item L'identifiant fait partie de l'adresse
+   \item Il doit être dans l'URL, pas en tant que paramètre
+  \end{itemize}
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Interface uniforme}
+ 
+ \begin{itemize}
+  \item Le client effectue des opérations sur une ressource
+  \item Opérations disponibles :
+  \begin{itemize}
+   \item GET : récupération d'une ressource
+   \item POST : créer une ressource
+   \item PUT : modifier une ressource
+   \item DELETE : supprimer une ressource
+   \item HEAD : GET, mais sans le contenu, juste les entêtes
+   \item OPTIONS : options de communication de la ressource
+  \end{itemize}
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Interface uniforme}
+ 
+ \begin{itemize}
+  \item Entêtes standardisés
+  \begin{itemize}
+   \item type de la requête, type attendu, taille de la réponse, etc.
+  \end{itemize}
+  \item Codes réponse standardisés
+  \begin{itemize}
+   \item 200 OK
+   \item 201 Created
+   \item 404 Not found
+   \item 409 Conflict
+   \item 500 Internal server error
+   \item etc.
+  \end{itemize}
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Sans état}
+ 
+ \begin{itemize}
+  \item Aucun lien entre deux requêtes...
+  \item Même si envoyées par le même client
+  \item Facilite la distribution à grande échelle (``scalability'')
+  \item Si état il y a, il est stocké dans une base de données
+  \item Plus de session !
+  \begin{itemize}
+   \item En théorie...
+   \item On peut choisir de ne pas suivre ce principe
+  \end{itemize}
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Représentation}
+ 
+ \begin{itemize}
+  \item Pas de format imposé pour représenter les ressources
+  \item Formats courants :
+  \begin{itemize}
+   \item XML
+   \item JSON
+   \item ATOM
+  \end{itemize}
+  \item Possibilité d'utiliser des schémas
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Hypermedia}
+ 
+ \begin{itemize}
+  \item Les ressources ont des liens vers d'autres ressources
+  \item Exactement comme des pages web
+  \item Un client peut suivre les liens d'une ressource à l'autre
+  \begin{itemize}
+   \item Un client intelligent...
+  \end{itemize}
+  \item Ex. : lien pour avancer dans un workflow ou l'annuler
+  \item Généralement, entente entre client et fournisseur du service
+ \end{itemize} 
+
+\end{frame}

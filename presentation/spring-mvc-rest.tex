@@ -2,131 +2,415 @@
 \input{current-section.tex}
 
 \begin{frame}
- \frametitle{REST}
+ \frametitle{Spring MVC et REST}
  \begin{itemize}
-  \item Representational State Transfer
-  \item Un style d'architecture
-  \item Une façon de faire communiquer des applications
-  \item Utiliser HTTP comme un protocole applicatif
+  \item Spring MVC fournit un support REST
+  \item Même modèle de programmation que pour les applications web
+  \item Annotations et mécanismes supplémentaires
+  \item Principale différence : plus de vue
+  \item Spring MVC
   \begin{itemize}
-   \item Pas juste comme un protocole de transport
+   \item désérialise le contenu des requêtes
+   \item sérialise le contenu des réponses
   \end{itemize}
  \end{itemize}
 \end{frame}
 
-\begin{frame}
- \frametitle{Concepts}
+\begin{frame}[fragile]
+ \frametitle{Activer le support REST}
  
  \begin{itemize}
-  \item Ressources identifiées
-  \item Interface uniforme
-  \item Sans état
-  \item Représentation
-  \item Hypermedia
+  \item Pour activer les dernières fonctionnalités de Spring MVC
+  \item Et notamment le support REST
  \end{itemize} 
+ 
+ \begin{xmlcode}
+<mvc:annotation-driven />
+ \end{xmlcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer une ressource (HTTP)}
+ 
+ \begin{itemize}
+  \item Requête
+ \end{itemize} 
+ 
+ \begin{textcode}
+GET /crud-rest/zen-contact/contacts/1 HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+ \end{textcode}
+ 
+  \begin{itemize}
+  \item Réponse
+ \end{itemize} 
+ 
+ \begin{textcode}
+HTTP/1.1 200 OK
+Content-Type: application/json
+{"id":1,"firstname":"Joe","lastname":"Dalton","age":37}
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)   
+@ResponseBody                 
+public <Contact> contact(@PathVariable Long id) {  
+  return contactRepository.findOne(id);
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(
+  value="/contacts/{id}",     // URL
+  method=RequestMethod.GET    // op\'eration
+)
+@ResponseBody                 // r\'esultat dans le corps de la r\'eponse
+public <Contact> contact(
+    @PathVariable Long id) {  // \`a extraire de l'URL
+  return contactRepository.findOne(id);
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer une ressource (client)}
+ 
+ \begin{javacode}
+RestTemplate tpl = new RestTemplate();
+Contact contact = tpl.getForObject(
+  "http://localhost:8080/crud-rest/zen-contact/contacts/1", 
+  Contact.class,
+  id
+);
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer des ressources (HTTP)}
+ 
+ \begin{itemize}
+  \item Requête
+ \end{itemize} 
+ 
+ \begin{textcode}
+GET /crud-rest/zen-contact/contacts HTTP/1.1
+Accept: application/json
+Host: localhost:8080
+ \end{textcode}
+ 
+  \begin{itemize}
+  \item Réponse
+ \end{itemize} 
+ 
+ \begin{textcode}
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Jetty(6.1.26)
+[
+ {"id":1,"firstname":"Joe","lastname":"Dalton","age":37},
+ {"id":2,"firstname":"William","lastname":"Dalton","age":35},
+ {"id":3,"firstname":"Jack","lastname":"Dalton","age":33},
+ {"id":4,"firstname":"Averell","lastname":"Dalton","age":31}
+]
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer des ressources (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts",method=RequestMethod.GET)
+@ResponseBody 
+public List<Contact> contacts() {
+  return contactRepository.findAll();
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Récupérer des ressources (client)}
+ 
+ \begin{javacode}
+RestTemplate tpl = new RestTemplate();
+Contact [] contacts = tpl.getForObject(
+  "http://localhost:8080/crud-rest/zen-contact/contacts", 
+  Contact[].class
+);
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer une ressource (HTTP)}
+ 
+ \begin{itemize}
+  \item Requête
+ \end{itemize} 
+ 
+ \begin{textcode}
+POST /crud-rest/zen-contact/contacts HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Content-Length: 61
+{"id":null,"firstname":"Oncle","lastname":"Picsou","age":100}
+ \end{textcode}
+ 
+  \begin{itemize}
+  \item Réponse
+ \end{itemize} 
+ 
+ \begin{textcode}
+HTTP/1.1 201 Created
+Location: http://localhost:8080/crud-rest/zen-contact/contacts/130
+Content-Length: 0
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts",method=RequestMethod.POST)
+@ResponseStatus(HttpStatus.CREATED)
+public void create(@RequestBody Contact contact,
+                   HttpServletRequest request, 
+                   HttpServletResponse response) {
+  contactRepository.save(contact);
+  String location = ServletUriComponentsBuilder.fromRequest(request)
+    .pathSegment("{id}")
+    .build()
+    .expand(contact.getId())
+    .encode()
+    .toUriString();
+  response.setHeader("Location", location);
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts",method=RequestMethod.POST)
+@ResponseStatus(HttpStatus.CREATED)  // code HTTP \`a retourner
+public void create(
+      @RequestBody Contact contact,  // extraire du corps de requ\^ete
+      HttpServletRequest request, 
+      HttpServletResponse response) {
+  (...)
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer une ressource (client)}
+ 
+ \begin{javacode}
+Contact contact = new Contact();
+contact.setFirstname("Oncle");
+contact.setLastname("Picsou");
+contact.setAge(100);
+RestTemplate tpl = new RestTemplate();
+URI location = tpl.postForLocation(
+  "http://localhost:8080/crud-rest/zen-contact/contacts",
+  contact
+);
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Modifier une ressource (HTTP)}
+ 
+ \begin{itemize}
+  \item Requête
+ \end{itemize} 
+ 
+ \begin{textcode}
+PUT /crud-rest/zen-contact/contacts/130 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+Content-Length: 61
+{"id":130,"firstname":"Oncle","lastname":"Picsou","age":90}
+ \end{textcode}
+ 
+  \begin{itemize}
+  \item Réponse
+ \end{itemize} 
+ 
+ \begin{textcode}
+HTTP/1.1 204 Not Content
+Content-Length: 0
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Modifier une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.PUT)
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void update(@RequestBody Contact contact) {
+  contactRepository.save(contact);
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Modifier une ressource (client)}
+ 
+ \begin{javacode}
+RestTemplate tpl = new RestTemplate();
+// cr\'eation donne l'URI
+URI location = tpl.postForLocation(...);
+// modification
+contact.setAge(90);
+URI location = tpl.put(location,contact);
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Supprimer une ressource (HTTP)}
+ 
+ \begin{itemize}
+  \item Requête
+ \end{itemize} 
+ 
+ \begin{textcode}
+DELETE /crud-rest/zen-contact/contacts/130 HTTP/1.1
+Host: localhost:8080
+ \end{textcode}
+ 
+  \begin{itemize}
+  \item Réponse
+ \end{itemize} 
+ 
+ \begin{textcode}
+HTTP/1.1 204 Not Content
+Content-Length: 0
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Supprimer une ressource (contrôleur)}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.DELETE)
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void update(@PathVariable Long id) {
+  contactRepository.delete(id);
+}
+ \end{javacode}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Supprimer une ressource (client)}
+ 
+ \begin{javacode}
+RestTemplate tpl = new RestTemplate();
+// cr\'eation donne l'URI
+URI location = tpl.postForLocation(...);
+// suppression
+URI location = tpl.delete(location);
+ \end{javacode}  
 
 \end{frame}
 
 \begin{frame}
- \frametitle{Ressources identifiées}
+ \frametitle{Gestion des erreurs}
  
  \begin{itemize}
-  \item Tout est ressource, chaque ressource a une addresse
-  \item L'adresse est une URI
-  \item Bien : http://somehost.com/zen/contacts/1
-  \item Pas bien http://somehost.com/zen/contacts?id=1
-  \begin{itemize}
-   \item L'identifiant fait partie de l'adresse
-   \item Il doit être dans l'URL, pas en tant que paramètre
-  \end{itemize}
- \end{itemize} 
+  \item Ex. : demande d'une ressource qui n'existe pas
+  \item Le serveur doit retourner une erreur 404
+  \item Comment faire avec Spring MVC, cotés serveur et client ?
+ \end{itemize}
 
 \end{frame}
 
-\begin{frame}
- \frametitle{Interface uniforme}
+\begin{frame}[fragile]
+ \frametitle{Gestion des erreurs, coté serveur, solution 1}
  
- \begin{itemize}
-  \item Le client effectue des opérations sur une ressource
-  \item Opérations disponibles :
-  \begin{itemize}
-   \item GET : récupération d'une ressource
-   \item POST : créer une ressource
-   \item PUT : modifier une ressource
-   \item DELETE : supprimer une ressource
-   \item HEAD : GET, mais sans le contenu, juste les entêtes
-   \item OPTIONS : options de communication de la ressource
-  \end{itemize}
- \end{itemize} 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+@ResponseBody
+public Contact contact(@PathVariable Long id) {
+  Contact contact = contactRepository.findOne(id);
+  if(contact == null) {
+    throw new EmptyResultDataAccessException(1);
+  }
+  return contact;
+}
+
+@ExceptionHandler(EmptyResultDataAccessException.class)
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public void notFound() { }
+ \end{javacode}
 
 \end{frame}
 
-\begin{frame}
- \frametitle{Interface uniforme}
+\begin{frame}[fragile]
+ \frametitle{Gestion des erreurs, coté serveur, solution 2}
  
  \begin{itemize}
-  \item Entêtes standardisés
-  \begin{itemize}
-   \item type de la requête, type attendu, taille de la réponse, etc.
-  \end{itemize}
-  \item Codes réponse standardisés
-  \begin{itemize}
-   \item 200 OK
-   \item 201 Created
-   \item 404 Not found
-   \item 409 Conflict
-   \item 500 Internal server error
-   \item etc.
-  \end{itemize}
- \end{itemize} 
+  \item Retourner une \code{@ResponseEntity}
+ \end{itemize}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+public ResponseEntity<Contact> contact(@PathVariable Long id) {
+  Contact contact = contactRepository.findOne(id);
+  ResponseEntity<Contact> response = new ResponseEntity<Contact>(
+    contact,
+    contact == null ? HttpStatus.NOT_FOUND : HttpStatus.OK
+  );
+  return response;
+}  
+ \end{javacode}
+ 
+ \begin{itemize}
+  \item \code{@ResponseBody} plus nécessaire
+ \end{itemize}
 
 \end{frame}
 
-\begin{frame}
- \frametitle{Sans état}
+\begin{frame}[fragile]
+ \frametitle{Gestion des erreurs, coté client}
+ 
+ \begin{javacode}
+try {
+  Contact contact = tpl.getForObject(location, Contact.class);
+} catch (HttpStatusCodeException e) {
+  // e.getStatusCode() == HttpStatus.NOT\_FOUND
+}
+ \end{javacode}
  
  \begin{itemize}
-  \item Aucun lien entre deux requêtes...
-  \item Même si envoyées par le même client
-  \item Facilite la distribution à grande échelle (``scalability'')
-  \item Si état il y a, il est stocké dans une base de données
-  \item Plus de session !
-  \begin{itemize}
-   \item En théorie...
-   \item On peut choisir de ne pas suivre ce principe
-  \end{itemize}
- \end{itemize} 
-
-\end{frame}
-
-\begin{frame}
- \frametitle{Représentation}
- 
- \begin{itemize}
-  \item Pas de format imposé pour représenter les ressources
-  \item Formats courants :
-  \begin{itemize}
-   \item XML
-   \item JSON
-   \item ATOM
-  \end{itemize}
-  \item Possibilité d'utiliser des schémas
- \end{itemize} 
-
-\end{frame}
-
-\begin{frame}
- \frametitle{Hypermedia}
- 
- \begin{itemize}
-  \item Les ressources ont des liens vers d'autres ressources
-  \item Exactement comme des pages web
-  \item Un client peut suivre les liens d'une ressource à l'autre
-  \begin{itemize}
-   \item Un client intelligent...
-  \end{itemize}
-  \item Ex. : lien pour avancer dans un workflow ou l'annuler
-  \item Généralement, entente entre client et fournisseur du service
- \end{itemize} 
+  \item Stratégie de gestion des exceptions configurable
+  \item Propriété \code{errorHandler} du \code{RestTemplate}
+ \end{itemize}
 
 \end{frame}
