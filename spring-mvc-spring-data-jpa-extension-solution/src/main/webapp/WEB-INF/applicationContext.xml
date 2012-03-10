@@ -9,8 +9,11 @@
 
 	<jpa:repositories base-package="com.zenika.nordnet.repository" />
 	
+	<bean class="com.zenika.nordnet.repository.SpringDataRepositoryFacade">
+		<constructor-arg ref="repositoryMetadataProvider" />
+	</bean>
 	
-	<bean class="com.zenika.nordnet.repository.SpringDataRepositoryFacade" />
+	<bean class="com.zenika.nordnet.repository.support.RepositoryMetadataProvider" id="repositoryMetadataProvider" />
 	
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
@@ -33,6 +36,5 @@
 	<jdbc:initialize-database data-source="dataSource">
 		<jdbc:script location="classpath:/data.sql"/>
 	</jdbc:initialize-database>
-
 
 </beans>
