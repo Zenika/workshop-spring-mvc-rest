@@ -36,7 +36,7 @@ public class ContentNegociationIntegrationTest {
 	
 	private static RestTemplate tpl = new RestTemplate();
 	
-	private final String url = "http://localhost:8081/content-negotiation/zen-contact/";
+	private final String url = "http://localhost:8080/content-negotiation/zen-contact/";
 	
 	private static Server server;
 	
@@ -52,9 +52,9 @@ public class ContentNegociationIntegrationTest {
 	}
 	
 	@Test public void contentNegotiation() throws Exception {
-		Contact[] contacts = tpl.getForObject(url+"/contacts", Contact[].class);
+		Contact[] contacts = tpl.getForObject(url+"contacts", Contact[].class);
 		Long id = contacts[0].getId();
-		Contact contact = tpl.getForObject(url+"/contacts/{id}", Contact.class, id);
+		Contact contact = tpl.getForObject(url+"contacts/{id}", Contact.class, id);
 		Assert.assertEquals(id,contact.getId());
 		
 		List<HttpMessageConverter<?>> convs = new ArrayList<HttpMessageConverter<?>>();

@@ -40,6 +40,12 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -182,5 +188,6 @@
 		<module>spring-data-mvc-rest-solution</module>
 		<module>spring-mvc-content-negotiation-start</module>
 		<module>spring-mvc-content-negotiation-solution</module>
+		<module>spring-mvc-spring-data-jpa-extension-solution</module>
 	</modules>
 </project>
