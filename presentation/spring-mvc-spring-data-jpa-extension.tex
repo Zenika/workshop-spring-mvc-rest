@@ -1,0 +1,137 @@
+\section{Spring MVC et Spring Data JPA}
+\input{current-section.tex}
+
+\begin{frame}[fragile]
+ \frametitle{Points d'extension de Spring MVC 3.1}
+ \begin{itemize}
+  \item Possibilité d'influer sur les paramètres de méthodes de contrôleurs
+  \item Ex. : Comment est géré \code{@RequestBody} ?
+ \end{itemize}
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.PUT)
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void update(@RequestBody Contact contact) {
+  contactRepository.save(contact);
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{HandlerMethodArgumentResolver}}
+ \begin{javacode}
+public interface HandlerMethodArgumentResolver {
+
+  boolean supportsParameter(MethodParameter parameter);
+
+  Object resolveArgument(MethodParameter parameter, 
+     ModelAndViewContainer mavContainer,
+     NativeWebRequest webRequest, 
+     WebDataBinderFactory binderFactory) throws Exception;
+
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{HandlerMethodArgumentResolver}}
+ \begin{itemize}
+  \item Principe pour la gestion de \code{@RequestBody}
+ \end{itemize}
+ \begin{javacode}
+public class RequestBodyHandlerMethodArgumentResolver {
+
+  public boolean supportsParameter(MethodParameter parameter) {
+    return parameter.hasParameterAnnotation(RequestBody.class);
+  }
+
+  (...)
+
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{HandlerMethodArgumentResolver}}
+ \begin{itemize}
+  \item Principe pour la gestion de \code{@RequestBody}
+ \end{itemize}
+ \begin{javacode}
+public class RequestBodyHandlerMethodArgumentResolver {
+  (...)
+  public Object resolveArgument(...) throws Exception {
+    Class expectedClass = parameter.getParameterType();
+    MediaType expectedMediaType = computeFrom(webRequest);
+    for(HttpMessageConverter converter : httpMessageConverters) {
+      if(converter.canRead(expectedClass,expectedMediaType)) {
+        return converter.read(expectedClass,webRequest);
+      }      
+    }
+  }
+
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{HandlerMethodArgumentResolver}}
+ \begin{itemize}
+  \item Il s'agit bien du principe...
+  \item Véritable implémentation : \code{RequestResponseBodyMethodProcessor}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Positionner un \code{HandlerMethodArgumentResolver}}
+ 
+ \begin{xmlcode}
+<mvc:annotation-driven>
+  <mvc:argument-resolvers>
+    <bean class="com.zenika.MyHandlerMethodArgumentResolver" />
+  </mvc:argument-resolvers>
+</mvc:annotation-driven>
+ \end{xmlcode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Et à la sortie ?}
+ 
+ \begin{itemize}
+  \item Même extensibilité pour l'objet retourné par un contrôleur
+ \end{itemize}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+public ResponseEntity<Contact> contact(@PathVariable Long id) {	
+  Contact contact = contactRepository.findOne(id);
+  ResponseEntity<Contact> response = new ResponseEntity<Contact>(
+    contact,
+    contact == null ? HttpStatus.NOT_FOUND : HttpStatus.OK
+  );
+  return response;
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{HandlerMethodReturnValueHandler}}
+ 
+ \begin{javacode}
+public interface HandlerMethodReturnValueHandler {
+
+  boolean supportsReturnType(MethodParameter returnType);
+
+  void handleReturnValue(Object returnValue,
+      MethodParameter returnType,
+      ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest) throws Exception;
+
+}
+ \end{javacode}
+
+\end{frame}
