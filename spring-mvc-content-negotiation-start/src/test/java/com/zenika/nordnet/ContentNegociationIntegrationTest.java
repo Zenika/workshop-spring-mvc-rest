@@ -64,7 +64,7 @@ public class ContentNegociationIntegrationTest {
 		// TODO 12 lancer le test (il doit fonctionner)
 		
 		convs.clear();
-		// TODO 13 positionner le MappingJacksonHttpMessageConverter sur le RestTemplate 
+		// TODO 13 positionner le Jaxb2RootElementHttpMessageConverter sur le RestTemplate 
 		// (ce doit être le seul convertisseur)
 		
 		// TODO 14 récupérer le contact sous forme d'une ResponseEntity
@@ -82,7 +82,7 @@ public class ContentNegociationIntegrationTest {
 		
 		// TODO 21 récupérer le contact sous forme d'une ResponseEntity
 		
-		// TODO 22 vérifier que le contenu est bien du JSON
+		// TODO 22 vérifier que le contenu est bien du CSV
 			
 		// TODO 23 lancer le test (il doit fonctionner)
 	}
