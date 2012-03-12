@@ -176,6 +176,8 @@
 		<module>spring-data-jpa-criteria-solution</module>
 		<module>spring-data-jpa-query-dsl-start</module>
 		<module>spring-data-jpa-query-dsl-solution</module>
+		<module>spring-proxies-start</module>
+		<module>spring-proxies-solution</module>
 		<module>spring-data-jpa-auditing-start</module>
 		<module>spring-data-jpa-auditing-solution</module>
 		<module>spring-data-jpa-best-practices-start</module>
