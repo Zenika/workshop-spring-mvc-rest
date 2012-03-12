@@ -23,7 +23,7 @@ import com.zenika.nordnet.repository.ContactRepository;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/spring-data-jpa-requete-convention-nommage.xml")
-// TODO 01 décommenter @Ignore
+// TODO 01 commenter @Ignore
 @Ignore
 public class SpringDataJpaRequeteConventionNommageTest {
 
