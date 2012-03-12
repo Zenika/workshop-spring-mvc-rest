@@ -180,12 +180,12 @@
 		<module>spring-data-jpa-auditing-solution</module>
 		<module>spring-data-jpa-best-practices-start</module>
 		<module>spring-data-jpa-best-practices-solution</module>
-		<module>spring-data-mvc-hello-world-start</module>
-		<module>spring-data-mvc-hello-world-solution</module>
-		<module>spring-data-mvc-application-web-start</module>
-		<module>spring-data-mvc-application-web-solution</module>
-		<module>spring-data-mvc-rest-start</module>
-		<module>spring-data-mvc-rest-solution</module>
+		<module>spring-mvc-hello-world-start</module>
+		<module>spring-mvc-hello-world-solution</module>
+		<module>spring-mvc-application-web-start</module>
+		<module>spring-mvc-application-web-solution</module>
+		<module>spring-mvc-rest-start</module>
+		<module>spring-mvc-rest-solution</module>
 		<module>spring-mvc-content-negotiation-start</module>
 		<module>spring-mvc-content-negotiation-solution</module>
 		<module>spring-mvc-spring-data-jpa-extension-start</module>

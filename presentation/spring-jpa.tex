@@ -27,11 +27,12 @@
       class="o.s.orm.jpa.LocalContainerEntityManagerFactoryBean">
   <property name="dataSource" ref="dataSource" />
   <property name="jpaVendorAdapter">
-  <bean class="o.s.orm.jpa.vendor.HibernateJpaVendorAdapter">
-    <property name="showSql" value="true" />
-    <property name="generateDdl" value="true" />
-    <property name="database" value="H2" />
-  </bean>
+    <bean class="o.s.orm.jpa.vendor.HibernateJpaVendorAdapter">
+      <property name="showSql" value="true" />
+      <property name="generateDdl" value="true" />
+      <property name="database" value="H2" />
+    </bean>
+  </property>
   <property name="packagesToScan" value="com.zenika.nordnet.model" />
 </bean>
  \end{xmlcode}
