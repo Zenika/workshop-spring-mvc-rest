@@ -5,7 +5,7 @@
 \begin{frame}
  \frametitle{Principes}
  \begin{itemize}
-  \item Spring DATA JPA peut trier et paginer des données
+  \item Spring Data JPA peut trier et paginer des données
   \item Il suffit de rajouter des paramètres dans les méthodes
   \item Rajoute de la flexibilité aux méthodes
   \begin{itemize}
@@ -40,7 +40,7 @@ public interface ContactRepository extends Repository<Contact,Long> {
  \end{itemize}
  \begin{javacode}
 repo.findByLastname("Dalton",new Sort(Direction.DESC,"firstname"));
-repo.findByLastname("Dalton",new Sort("firstname")); // ASC par defaut
+repo.findByLastname("Dalton",new Sort("firstname")); // ASC par d\'efaut
  \end{javacode}
 \end{frame}
 
