@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 
 /**
  * 
@@ -15,10 +14,6 @@ import javax.persistence.NamedQuery;
  * 
  */
 @Entity
-@NamedQuery(
-	name="Contact.findBySearchCriteria",
-	query="from Contact c where lower(c.firstname) = lower(?1) or lower(c.lastname) = lower(?1)"
-)
 public class Contact implements DomainObject {
 
 	@Id
