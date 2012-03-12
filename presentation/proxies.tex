@@ -15,24 +15,15 @@
 
 \begin{frame}[fragile]
  \frametitle{Principe d'un proxy (AOP)}
- \begin{javacode}
-OrderConfirmation o = orderService.submit(order);
- \end{javacode}
-
-TODO mettre une image
-
-\end{frame}
-
-\begin{frame}
- \frametitle{Proxies dans Spring Data JPA}
  \begin{itemize}
-  \item Principe légèrement différent des proxies AOP
-  \item Il n'y pas de cible
-  \item Le comportement de la méthode est implémenté à la volée
-  \item Ex. de critères d'implémentation : le nom de la méthode
+  \item Le proxy implémente la même interface que l'objet cible
+  \item Tous les appels de méthodes sont interceptés
+  \item Du code est exécuté autour de ces méthodes
  \end{itemize}
 
 \end{frame}
+
+
 
 \begin{frame}
  \frametitle{Proxy JDK}
@@ -71,21 +62,59 @@ ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(
 InvocationHandler invocationHandler = new InvocationHandler() {      
   public Object invoke(Object proxy, Method method, Object[] args)
                                 throws Throwable {
-    System.out.println(method.getName());
-    return null;
+    // comportement avant
+    // appelle de la m\'ethode
+    Object res = method.invoke(cible,args);
+    // comportement apr\`es
+    return res;
   }
 };
 ContactRepository repo = (ContactRepository) Proxy.newProxyInstance(..);
-repo.findAll(); // affiche ``findAll''
+repo.findAll(); 
 \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Ajouter une transaction de façon transparente}
+
+\begin{javacode}
+InvocationHandler handler = new InvocationHandler() {
+  @Override
+  public Object invoke(Object proxy, Method method, Object[] args)
+                   throws Throwable {
+    TransactionStatus status = tm.getTransaction(
+      new DefaultTransactionDefinition()
+    );
+    try {
+      Object res = method.invoke(targetRepo, args);
+      tm.commit(status);
+      return res;
+    } catch(Exception e) {
+      tm.rollback(status);
+      throw e;
+    }
+  }
+};
+\end{javacode}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Proxies dans Spring Data JPA}
+ \begin{itemize}
+  \item Principe légèrement différent des proxies AOP
+  \item Il n'y pas de cible
+  \item Le comportement de la méthode est implémenté à la volée
+  \item Ex. de critères d'implémentation : le nom de la méthode
+ \end{itemize}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Proxies dans Spring Data JPA}
  \begin{itemize}
-  \item Un repository avec un interface custom
-  \item Le proxy correspond ``route'' les appels :
+  \item Le proxy ``route'' les appels :
   \begin{itemize}
    \item Implémentation par défaut pour les méthodes CRUD
    \item Implémentation custom pour les méthodes de l'interface custom
