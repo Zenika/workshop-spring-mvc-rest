@@ -61,7 +61,7 @@ Content-Type: application/json
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)   
 @ResponseBody                 
-public <Contact> contact(@PathVariable Long id) {  
+public Contact contact(@PathVariable Long id) {  
   return contactRepository.findOne(id);
 }
  \end{javacode}  
@@ -91,7 +91,7 @@ public <Contact> contact(
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
 Contact contact = tpl.getForObject(
-  "http://localhost:8080/crud-rest/zen-contact/contacts/1", 
+  "http://localhost:8080/crud-rest/zen-contact/contacts/{id}", 
   Contact.class,
   id
 );
@@ -283,7 +283,7 @@ RestTemplate tpl = new RestTemplate();
 URI location = tpl.postForLocation(...);
 // modification
 contact.setAge(90);
-URI location = tpl.put(location,contact);
+tpl.put(location,contact);
  \end{javacode}  
 
 \end{frame}
@@ -332,7 +332,7 @@ RestTemplate tpl = new RestTemplate();
 // cr\'eation donne l'URI
 URI location = tpl.postForLocation(...);
 // suppression
-URI location = tpl.delete(location);
+tpl.delete(location);
  \end{javacode}  
 
 \end{frame}
