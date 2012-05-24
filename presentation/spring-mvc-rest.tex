@@ -77,7 +77,7 @@ public Contact contact(@PathVariable Long id) {
   method=RequestMethod.GET    // op\'eration
 )
 @ResponseBody                 // r\'esultat dans le corps de la r\'eponse
-public <Contact> contact(
+public Contact contact(
     @PathVariable Long id) {  // \`a extraire de l'URL
   return contactRepository.findOne(id);
 }
@@ -317,7 +317,7 @@ Content-Length: 0
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.DELETE)
 @ResponseStatus(HttpStatus.NO_CONTENT)
-public void update(@PathVariable Long id) {
+public void delete(@PathVariable Long id) {
   contactRepository.delete(id);
 }
  \end{javacode}  
