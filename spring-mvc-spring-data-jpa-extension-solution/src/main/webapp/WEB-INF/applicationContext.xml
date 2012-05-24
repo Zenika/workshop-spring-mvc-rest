@@ -7,13 +7,13 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd">
 
-	<jpa:repositories base-package="com.zenika.nordnet.repository" />
+	<jpa:repositories base-package="com.zenika.cnamts.repository" />
 	
-	<bean class="com.zenika.nordnet.repository.SpringDataRepositoryFacade">
+	<bean class="com.zenika.cnamts.repository.SpringDataRepositoryFacade">
 		<constructor-arg ref="repositoryMetadataProvider" />
 	</bean>
 	
-	<bean class="com.zenika.nordnet.repository.support.RepositoryMetadataProvider" id="repositoryMetadataProvider" />
+	<bean class="com.zenika.cnamts.repository.support.RepositoryMetadataProvider" id="repositoryMetadataProvider" />
 	
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
@@ -28,7 +28,7 @@
 				<property name="database" value="H2" />
 			</bean>
 		</property>
-		<property name="packagesToScan" value="com.zenika.nordnet.model" />
+		<property name="packagesToScan" value="com.zenika.cnamts.model" />
 	</bean>
 
 	<jdbc:embedded-database id="dataSource" type="H2" />

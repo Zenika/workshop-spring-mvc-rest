@@ -182,7 +182,7 @@ public interface HttpMessageConverter<T> {
  \begin{xmlcode}
 <mvc:annotation-driven>
   <mvc:message-converters register-defaults="true">
-    <bean class="com.zenika.nordnet.web.CsvHttpMessageConverter" />
+    <bean class="com.zenika.cnamts.web.CsvHttpMessageConverter" />
   </mvc:message-converters>
 </mvc:annotation-driven>
  \end{xmlcode}
@@ -242,7 +242,7 @@ public interface HandlerInterceptor {
  
  \begin{xmlcode}
 <mvc:interceptors>
-  <bean class="com.zenika.nordnet.web.LogHandlerInterceptor" />
+  <bean class="com.zenika.cnamts.web.LogHandlerInterceptor" />
 </mvc:interceptors>
  \end{xmlcode}
 
