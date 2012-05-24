@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zenika</groupId>
-	<artifactId>nordnet-parent</artifactId>
+	<artifactId>cnamts-parent</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0.0</version>
-	<name>nordnet-parent</name>
+	<name>cnamts-parent</name>
 
 
 	<dependencies>
@@ -165,30 +165,6 @@
 	</properties>
 
 	<modules>
-		<module>spring-jpa-start</module>
-		<module>spring-jpa-solution</module>
-		<module>spring-data-jpa-hello-world-start</module>
-		<module>spring-data-jpa-hello-world-solution</module>
-		<module>spring-data-jpa-crud-start</module>
-		<module>spring-data-jpa-crud-solution</module>
-		<module>spring-data-jpa-requete-convention-nommage-start</module>
-		<module>spring-data-jpa-requete-convention-nommage-solution</module>
-		<module>spring-data-jpa-repository-custom-start</module>
-		<module>spring-data-jpa-repository-custom-solution</module>
-		<module>spring-data-jpa-requete-jpql-start</module>
-		<module>spring-data-jpa-requete-jpql-solution</module>
-		<module>spring-data-jpa-tri-pagination-start</module>
-		<module>spring-data-jpa-tri-pagination-solution</module>
-		<module>spring-data-jpa-criteria-start</module>
-		<module>spring-data-jpa-criteria-solution</module>
-		<module>spring-data-jpa-query-dsl-start</module>
-		<module>spring-data-jpa-query-dsl-solution</module>
-		<module>spring-proxies-start</module>
-		<module>spring-proxies-solution</module>
-		<module>spring-data-jpa-auditing-start</module>
-		<module>spring-data-jpa-auditing-solution</module>
-		<module>spring-data-jpa-best-practices-start</module>
-		<module>spring-data-jpa-best-practices-solution</module>
 		<module>spring-mvc-hello-world-start</module>
 		<module>spring-mvc-hello-world-solution</module>
 		<module>spring-mvc-application-web-start</module>
