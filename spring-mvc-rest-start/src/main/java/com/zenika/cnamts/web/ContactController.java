@@ -34,7 +34,7 @@ public class ContactController {
 	// opération : PUT
 	
 	
-	// TODO 25 créer une méthode update pour supprimer un contact
+	// TODO 25 créer une méthode delete pour supprimer un contact
 	// URL : /contacts/{id}
 	// opération : DELETE
 	
