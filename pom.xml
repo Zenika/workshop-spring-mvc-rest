@@ -180,6 +180,7 @@
 		<module>spring-mvc-rest-solution</module>
 		<module>spring-mvc-content-negotiation-start</module>
 		<module>spring-mvc-content-negotiation-solution</module>
+		<module>spring-mvc-hateoas-start</module>
 		<module>spring-mvc-hateoas-solution</module>
 		<module>spring-mvc-spring-data-jpa-extension-start</module>
 		<module>spring-mvc-spring-data-jpa-extension-solution</module>
