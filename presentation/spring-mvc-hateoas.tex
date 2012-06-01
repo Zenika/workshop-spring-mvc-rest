@@ -1,0 +1,108 @@
+\section{HATEOAS}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{HATEOAS}
+ \begin{itemize}
+  \item Hypermedia as the engine of application state
+  \item Permet de découvrir les actions futures/possibles
+  \begin{itemize}
+   \item Naviguer vers une autre ressource
+   \item Avoir le détail d'une ressource
+   \item Récupérer d'autres représentations d'une ressource
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{HATEOAS : exemple}
+ \begin{textcode}
+[
+  {
+    "id":{
+      "rel":"self",
+      "href":"http://localhost:8080/hateoas/zen-contact/contacts/1"
+    },
+    "firstname":"Joe",
+    "lastname":"Dalton",
+    "links":[
+      {
+        "rel":"self",
+        "href":"http://localhost:8080/hateoas/zen-contact/contacts/1"
+      }
+    ]
+  }, ...
+]
+ \end{textcode}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Spring HATEOAS}
+ \begin{itemize}
+  \item Une librairie proposant un support HATEOAS
+  \item S'intégre avec Spring MVC
+  \item En cours de développement !
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{\code{Link}}
+ 
+ \begin{javacode}
+Link link = new Link(
+  "http://localhost:8080/hateoas/zen-contact/contacts/1",
+  Link.REL_SELF
+);
+ \end{javacode}
+
+ \begin{itemize}
+  \item \code{Link}s ajoutés aux ressources...
+  \item ... puis sérialisés en JSON, XML...
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Ressource avec des liens}
+ 
+ \begin{itemize}
+  \item Rajouter un support pour \code{Link} dans ses ressources...
+  \item ... ou utiliser \code{ResourceSupport}
+ \end{itemize}
+ 
+ \begin{javacode}
+public class ShortContact extends ResourceSupport {
+
+  private String firstname,lastname;
+  (...) // getters and setters
+}
+...
+ShortContact resource = new ShortContact();
+resource.add(new Link("http://localhost/contacts/1"));
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Intégration avec Spring MVC}
+
+ \begin{javacode}
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+
+@Controller
+@RequestMapping("/contacts")
+public class ContactController { 
+  ...
+  
+  // dans une m\'ethode
+  // lien \`a partir de l'URL du contr\^oleur, ajout d'un identifiant
+  Link detail = linkTo(ContactController.class)
+    .slash(contact.getId())
+    .withSelfRel();
+
+}
+ \end{javacode}
+
+\end{frame} 
