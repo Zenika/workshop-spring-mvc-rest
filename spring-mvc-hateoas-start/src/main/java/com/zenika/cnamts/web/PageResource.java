@@ -17,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author acogoluegnes
  *
  */
-// TODO 15 analyser la classe PageResource
+// TODO 16 analyser la classe PageResource
 // elle :
 //   - implémente Page (interface Spring JPA) et délègue tous les appels à la page à exposer
 //   - hérite de ResourceSupport (Spring HATEOAS) et supporte donc les Links
@@ -35,7 +35,7 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 			String sizeParam) {
 		super();
 		this.page = page;
-		// TODO 16 analyser comment le lien vers la page précédente est créé
+		// TODO 17 analyser comment le lien vers la page précédente est créé
 		if(page.hasPreviousPage()) {
 			String path = createBuilder()
 				.queryParam(pageParam,page.getNumber()-1)
@@ -45,10 +45,10 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 			Link link = new Link(path, Link.REL_PREVIOUS);
 			add(link);
 		}
-		// TODO 17 créer le lien pour la page suivante
+		// TODO 18 créer le lien pour la page suivante
 		
 		
-		// TODO 18 regarder les différents liens créés et ajoutés
+		// TODO 19 regarder les différents liens créés et ajoutés
 		Link link = buildPageLink(pageParam,0,sizeParam,page.getSize(),Link.REL_FIRST);
 		add(link);
 		

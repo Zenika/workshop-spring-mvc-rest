@@ -68,9 +68,9 @@ public class ContactController {
 	
 	@RequestMapping(value="/pages",method=RequestMethod.GET)
 	@ResponseBody 
-	// TODO 19 changer la signature pour retourner une PageResource<Contact>
+	// TODO 20 changer la signature pour retourner une PageResource<Contact>
 	public Page<Contact> contactsPages(@RequestParam int page,@RequestParam int size) {
-		// TODO 13 OPTIONNEL pagination navigable
+		// TODO 14 OPTIONNEL pagination navigable
 		// les éléments peuvent être récupérés sous forme de pages
 		// il faudrait rendre ces pages complétement navigable, c'est-à-dire
 		// que chaque page contiendra des liens vers la page précédente, la page suivante,
@@ -81,7 +81,7 @@ public class ContactController {
 			page,size,new Sort("id")
 		);
 		Page<Contact> pageResult = contactRepository.findAll(pageable);
-		// TODO 20 wrapper la Page dans une PageResource et la retourner
+		// TODO 21 wrapper la Page dans une PageResource et la retourner
 		return pageResult;
 	}
 
