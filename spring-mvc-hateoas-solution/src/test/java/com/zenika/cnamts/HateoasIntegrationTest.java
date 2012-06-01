@@ -40,7 +40,8 @@ public class HateoasIntegrationTest {
 	
 	@Test public void selectContacts() throws Exception {
 		JsonNode nodes = tpl.getForObject(BASE_URL+"contacts", JsonNode.class);
-		Assert.assertEquals(nodes.size(),13);
+		int totalElements = 12;
+		Assert.assertEquals(totalElements,nodes.size());
 		JsonNode node = nodes.get(0);
 		JsonNode detailLink = node.get("id");
 		String detailUrl = detailLink.get("href").getTextValue();
