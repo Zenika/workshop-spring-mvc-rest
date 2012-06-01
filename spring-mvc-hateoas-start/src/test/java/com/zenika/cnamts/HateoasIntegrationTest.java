@@ -46,7 +46,8 @@ public class HateoasIntegrationTest {
 		// TODO 08 relancer le test et analyser le contenu de la réponse
 		// le lien vers le détail du contact doit être présent pour chacun des éléments
 		
-		// TODO 09 récupérer le premier contact (sous la forme d'un JsonNode)
+		// les tâches suivantes sont à faire via l'API de Jackson (pas d'appel REST)
+		// TODO 09 récupérer le premier contact à partir de la variable nodes
 
 		// TODO 10 récupérer l'identifiant de la ressource (champ "id")
 
