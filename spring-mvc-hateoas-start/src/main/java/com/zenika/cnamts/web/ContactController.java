@@ -52,7 +52,6 @@ public class ContactController {
 	public List<Contact> contacts() {
 		List<Contact> contacts = contactRepository.findAll();
 		// TODO 04 initialiser une List<ShortContact>
-		List<ShortContact> resources = new ArrayList<ShortContact>(contacts.size());
 		
 		// TODO 05 itérer sur les contacts
 		
