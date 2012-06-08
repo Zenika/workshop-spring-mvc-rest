@@ -9,5 +9,14 @@
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>spring-mvc-hateoas-start</artifactId>
+	
+	<dependencies>
+		<dependency>
+                        <groupId>org.springframework.hateoas</groupId>
+                        <artifactId>spring-hateoas</artifactId>
+                        <version>1.0.0.BUILD-SNAPSHOT</version>
+                </dependency>
 
+	</dependencies>
+	
 </project>

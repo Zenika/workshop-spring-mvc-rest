@@ -12,12 +12,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.springframework.hateoas</groupId>
-			<artifactId>spring-hateoas</artifactId>
-			<version>${spring.hateoas.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 			<version>${spring.data.jpa.version}</version>
@@ -152,7 +146,7 @@
 
 
 	<properties>
-		<spring.hateoas.version>1.0.0.BUILD-SNAPSHOT</spring.hateoas.version>
+		<spring.hateoas.version>1.0.0.20120608</spring.hateoas.version>
 		<spring.data.jpa.version>1.0.3.RELEASE</spring.data.jpa.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<hibernate.version>3.6.10.Final</hibernate.version>
@@ -172,6 +166,7 @@
 	</properties>
 
 	<modules>
+		<module>spring-hateoas</module>
 		<module>spring-mvc-hello-world-start</module>
 		<module>spring-mvc-hello-world-solution</module>
 		<module>spring-mvc-application-web-start</module>
