@@ -14,7 +14,7 @@
 		<dependency>
                         <groupId>org.springframework.hateoas</groupId>
                         <artifactId>spring-hateoas</artifactId>
-                        <version>1.0.0.BUILD-SNAPSHOT</version>
+                        <version>${spring.hateoas.version}</version>
                 </dependency>
 
 	</dependencies>
