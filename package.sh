@@ -1,6 +1,6 @@
 #!/bin/bash
 
-buildDir="./labs-spring-mvc/"
+buildDir="./labs-spring-mvc"
 outputName="labs-spring-mvc"
 
 mvn -f ./pom.xml clean install -Dmaven.test.skip
