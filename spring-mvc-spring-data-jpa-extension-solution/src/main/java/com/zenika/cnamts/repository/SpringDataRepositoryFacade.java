@@ -82,7 +82,7 @@ public class SpringDataRepositoryFacade implements RepositoryFacade, Application
 		for (RepositoryFactoryInformation info : repositoryMetadataProvider.getRepositoryFactoryInformations()) {
 
 			EntityInformation<DomainObject, Serializable> metadata = info.getEntityInformation();
-			Class<JpaRepository<DomainObject, Serializable>> objectType =	info.getRepositoryInterface();
+			Class<JpaRepository<DomainObject, Serializable>> objectType =	(Class<JpaRepository<DomainObject, Serializable>>) info.getRepositoryInformation().getRepositoryInterface();
 			JpaRepository<DomainObject, Serializable> repository = BeanFactoryUtils.beanOfType(context, objectType);
 			
 			Class<?> entityClass = metadata.getJavaType();
