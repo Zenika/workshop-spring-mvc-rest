@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import org.codehaus.jackson.JsonNode;
 import org.eclipse.jetty.server.Connector;
@@ -12,10 +12,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.hateoas.Link;
 import org.springframework.web.client.RestTemplate;
-
-import com.zenika.cnamts.model.Contact;
 
 /**
  * 
@@ -39,15 +36,27 @@ public class HateoasIntegrationTest {
 	}
 	
 	@Test public void selectContacts() throws Exception {
+		// TODO 01 lancer le test et vérifier qu'il fonctionne
 		JsonNode nodes = tpl.getForObject(BASE_URL+"contacts", JsonNode.class);
 		int totalElements = 12;
 		Assert.assertEquals(totalElements,nodes.size());
-		JsonNode node = nodes.get(0);
-		JsonNode detailLink = node.get("id");
-		String detailUrl = detailLink.get("href").getTextValue();
+		// TODO 02 écrire dans la console la variables nodes et analyser le contenu
+		// l'idée du TP est que chaque contact contienne un lien vers son URL de détail
 		
-		Contact contact = tpl.getForObject(detailUrl,Contact.class);
-		Assert.assertTrue(detailUrl.endsWith(contact.getId().toString()));
+		// TODO 09 relancer le test et analyser le contenu de la réponse
+		// le lien vers le détail du contact doit être présent pour chacun des éléments
+		
+		// les tâches suivantes sont à faire via l'API de Jackson (pas d'appel REST)
+		// TODO 10 récupérer le premier contact à partir de la variable nodes
+
+		// TODO 11 récupérer l'identifiant de la ressource (champ "id")
+
+		// TODO 12 récupérer l'URL de détail (champ "href")
+		String detailUrl = null;
+		
+		// TODO 13 décommenter les lignes suivantes, les analyser et lancer le test
+		// Contact contact = tpl.getForObject(detailUrl,Contact.class);
+		// Assert.assertTrue(detailUrl.endsWith(contact.getId().toString()));
 	}
 	
 	@Test public void selectContactsPages() throws Exception {
@@ -60,18 +69,33 @@ public class HateoasIntegrationTest {
 				0,pageSize
 		);
 		Assert.assertEquals(page.get("content").size(), pageSize);
-		int totalElements = page.get("totalElements").getIntValue();
-		Assert.assertNull(getLink(page,Link.REL_PREVIOUS));
-		pageUrl = getLink(page,Link.REL_NEXT);
-		Assert.assertNotNull(pageUrl);
+		int totalElements = 12;
+		Assert.assertEquals(totalElements, page.get("totalElements").getIntValue());
+		// TODO 15 afficher la page dans la console, lancer le test et analyser la sortie console
+		// pour l'instant, une page ne contient pas de lien vers les autres pages
+		
+		// TODO 22 relancer le test pour ce qui s'affiche dans la console
+		
+		// TODO 23 analyser la méthode getLink (elle récupère les liens selon la valeur de rel)
+		// TODO 24 vérifier que le lien PREVIOUS est nul
+		
+		// TODO 25 récupérer l'URL de la page suivante (lien NEXT)
+
 		// 2ème page
-		page = tpl.getForObject(pageUrl, JsonNode.class);
-		Assert.assertEquals(page.get("content").size(), pageSize);
-		pageUrl = getLink(page,Link.REL_NEXT);
+		// TODO 26 récupérer la 2ème page sous forme de JsonNode
+		
+		// TODO 27 vérifier que le nombre d'éléments de la page est correct
+		
+		// TODO 28 récupérer l'URL de la page suivante
+		
 		// 3ème page
-		page = tpl.getForObject(pageUrl, JsonNode.class);
-		Assert.assertEquals(page.get("content").size(), totalElements%pageSize);
-		Assert.assertNull(getLink(page,Link.REL_NEXT));
+		// TODO 29 récupérer la 3ème page sous forme de JsonNode
+		
+		// TODO 30 vérifier que le nombre d'éléments de la page est correct
+		// (attention, c'est la dernière page et elle n'est pas complète)
+		// (on peut utiliser le nombre total d'éléments et l'opérateur modulo %)
+	
+		// TODO 31 vérifier que cette page n'a pas de lien suivant
 	}
 	
 	private String getLink(JsonNode node,String rel) {

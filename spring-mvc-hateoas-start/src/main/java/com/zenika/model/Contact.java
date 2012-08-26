@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.model;
+package com.zenika.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

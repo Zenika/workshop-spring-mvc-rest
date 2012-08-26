@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zenika.cnamts.model.Contact;
-import com.zenika.cnamts.repository.ContactRepository;
+import com.zenika.model.Contact;
+import com.zenika.repository.ContactRepository;
 
 /**
  * @author acogoluegnes

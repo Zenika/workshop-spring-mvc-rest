@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import java.util.Iterator;
 import java.util.List;

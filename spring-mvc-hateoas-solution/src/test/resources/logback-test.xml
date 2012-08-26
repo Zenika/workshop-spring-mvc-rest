@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="com.zenika.cnamts.web" level="debug" />
+	<logger name="com.zenika.web" level="debug" />
 	
 	<root level="error">
 		<appender-ref ref="STDOUT" />
