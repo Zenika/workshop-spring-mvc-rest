@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -18,9 +18,6 @@ public class LaunchHelloWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		// TODO 05 démarrer le conteneur web en lançant ce programme Java
-		
-		// TODO 06 une fois lancé, vérifier la page http://localhost:8080/hello-world/zen-contact/hello
 		Server server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(8080);
