@@ -8,7 +8,7 @@
 	
 	<logger name="org.springframework.web" level="warn" />
 	
-	<logger name="com.zenika.cnamts" level="debug" />
+	<logger name="com.zenika" level="debug" />
 
 	<root level="error">
 		<appender-ref ref="STDOUT" />
