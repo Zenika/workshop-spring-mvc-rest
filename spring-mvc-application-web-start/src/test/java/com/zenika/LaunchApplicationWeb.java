@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -10,7 +10,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * @author acogoluegnes
- *
+ * 
  */
 public class LaunchApplicationWeb {
 
@@ -18,6 +18,10 @@ public class LaunchApplicationWeb {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
+		// TODO 03 démarrer le conteneur web en lançant ce programme Java
+
+		// TODO 04 une fois lancé, vérifier la page
+		// http://localhost:8080/application-web/zen-contact/contact
 		Server server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(8080);
@@ -25,16 +29,20 @@ public class LaunchApplicationWeb {
 		server.addConnector(connector);
 
 		String app = "application-web";
-		
+
 		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/"+app);
+		wac.setContextPath("/" + app);
 		wac.setWar("./src/main/webapp");
 		server.setHandler(wac);
 		server.setStopAtShutdown(true);
 
 		server.start();
-        
-        System.out.println("**** "+app+" launched");
+
+		System.out.println("**** " + app + " launched");
+
+		// TODO 05 arrêter le serveur
+
+		// TODO 08 redémarrer le serveur et vérifier la page
 	}
 
 }

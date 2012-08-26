@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * @author acogoluegnes

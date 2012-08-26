@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * @author acogoluegnes

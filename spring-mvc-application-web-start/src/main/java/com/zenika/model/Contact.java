@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.model;
+package com.zenika.model;
 
 /**
  * @author acogoluegnes

@@ -16,6 +16,12 @@
 			<artifactId>jasper</artifactId>
 			<version>${tomcat.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>org.apache.tomcat</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
