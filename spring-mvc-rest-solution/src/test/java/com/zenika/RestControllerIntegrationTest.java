@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import java.net.URI;
 
@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * 

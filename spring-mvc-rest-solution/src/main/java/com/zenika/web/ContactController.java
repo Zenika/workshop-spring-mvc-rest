@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.zenika.cnamts.model.Contact;
-import com.zenika.cnamts.repository.ContactRepository;
+import com.zenika.model.Contact;
+import com.zenika.repository.ContactRepository;
 
 /**
  * @author acogoluegnes

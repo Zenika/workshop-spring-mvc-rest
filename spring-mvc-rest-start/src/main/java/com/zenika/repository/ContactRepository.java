@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.zenika.cnamts.repository;
+package com.zenika.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * @author acogoluegnes
