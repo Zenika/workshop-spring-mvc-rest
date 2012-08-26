@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

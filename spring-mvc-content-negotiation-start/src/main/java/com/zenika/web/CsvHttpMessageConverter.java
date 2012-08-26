@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts.web;
+package com.zenika.web;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * @author acogoluegnes

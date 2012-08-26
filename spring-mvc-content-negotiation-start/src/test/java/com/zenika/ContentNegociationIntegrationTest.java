@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.zenika.cnamts.model.Contact;
+import com.zenika.model.Contact;
 
 /**
  * 

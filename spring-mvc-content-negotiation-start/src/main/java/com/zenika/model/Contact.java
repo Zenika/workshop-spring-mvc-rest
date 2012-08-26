@@ -1,13 +1,12 @@
 /**
  * 
  */
-package com.zenika.cnamts.model;
+package com.zenika.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
@@ -15,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @Entity
-@XmlRootElement(name="contact")
+// TODO 16 rendre la classe sérialisable avec JAXB2
 public class Contact {
 
 	@Id

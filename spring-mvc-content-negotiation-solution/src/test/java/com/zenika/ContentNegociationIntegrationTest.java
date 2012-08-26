@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.zenika.cnamts;
+package com.zenika;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ import org.springframework.http.converter.json.MappingJacksonHttpMessageConverte
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.zenika.cnamts.model.Contact;
-import com.zenika.cnamts.web.CsvHttpMessageConverter;
-import com.zenika.cnamts.web.LogClientHttpRequestInterceptor;
+import com.zenika.model.Contact;
+import com.zenika.web.CsvHttpMessageConverter;
+import com.zenika.web.LogClientHttpRequestInterceptor;
 
 /**
  * 
