@@ -110,7 +110,7 @@ public class HelloWorldController {
   \end{itemize}
   
  \begin{xmlcode}
-<context:component-scan base-package="com.zenika.cnamts.web" />
+<context:component-scan base-package="com.zenika.web" />
  \end{xmlcode}
  
 \end{frame}
@@ -172,7 +172,7 @@ public class HelloWorldController {
  
  \begin{xmlcode}
 <!-- Dans le contexte de la DispatcherServlet -->
-<bean class="com.zenika.cnamts.web.HelloWorldController">
+<bean class="com.zenika.web.HelloWorldController">
   <!-- contactService est d\'eclar\'e dans le root context -->
   <property name="contactService" 
             ref="contactService />
