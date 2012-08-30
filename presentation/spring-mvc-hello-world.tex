@@ -178,5 +178,100 @@ public class HelloWorldController {
             ref="contactService />
 </bean>
  \end{xmlcode}
+
+\end{frame}
+ 
+ \begin{frame}
+ \frametitle{Configuration Java, sans \code{web.xml}}
+ 
+ \begin{itemize}
+  \item Possibilité de configurer Spring en Java
+  \item Depuis Servlet 3.0, configuration sans \code{web.xml}
+  \item 0 XML !
+ \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration de Spring MVC en Java}
+ 
+ \begin{javacode}
+@Configuration // c'est une classe de configuration
+@ComponentScan(basePackageClasses=HelloWorldController.class)
+@EnableWebMvc  // configuration REST de Spring MVC
+public class HelloWorldConfiguration 
+       extends WebMvcConfigurerAdapter { // surcharger des m\'ethodes 
+                                         // (si n\'ecessaire)
+	
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Initialisation de l'application}
+ 
+ \begin{javacode}
+public class HelloWorldWebApplicationInitializer
+       implements WebApplicationInitializer {
+
+  @Override
+  public void onStartup(ServletContext servletContext)
+              throws ServletException {
+    // cr\'eation root application context
+    // et servlet
+  }
+
+}
+ \end{javacode}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Initialisation de l'application (root context)}
+ 
+ \begin{javacode}
+public class HelloWorldWebApplicationInitializer
+       implements WebApplicationInitializer {
+
+  @Override
+  public void onStartup(ServletContext servletContext)
+              throws ServletException {
+
+    AnnotationConfigWebApplicationContext rootContext =
+      new AnnotationConfigWebApplicationContext();
+    rootContext.register(BackendApplicationConfiguration.class);
+    servletContext.addListener(new ContextLoaderListener(rootContext));
+    (...)
+  }
+
+}
+ \end{javacode}
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Initialisation de l'application (dispatcher servlet)}
+ 
+ \begin{javacode}
+public class HelloWorldWebApplicationInitializer
+       implements WebApplicationInitializer {
+
+  @Override
+  public void onStartup(ServletContext servletContext)
+              throws ServletException {
+    (...)
+    AnnotationConfigWebApplicationContext dispatcherContext =
+      new AnnotationConfigWebApplicationContext();
+    dispatcherContext.register(HelloWorldConfiguration.class);
+    ServletRegistration.Dynamic dispatcher = servletContext.addServlet(
+      "dispatcher", new DispatcherServlet(dispatcherContext)
+    );
+    dispatcher.setLoadOnStartup(1);
+    dispatcher.addMapping("/zen-contact/*");
+  }
+
+}
+ \end{javacode}
  
 \end{frame}
