@@ -33,7 +33,7 @@ public class HelloWorldWebApplicationInitializer implements
 		AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
 		dispatcherContext.register(HelloWorldConfiguration.class);
 		
-		// TODO 09 mapper la servlet sur /zen-context/*
+		// TODO 09 mapper la servlet sur /zen-contact/*
 	}
 
 }

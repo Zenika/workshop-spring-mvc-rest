@@ -30,7 +30,7 @@ import com.zenika.web.HelloWorldController;
  * @author acogoluegnes
  * 
  */
-// TODO 10 décommenter @Ignore
+// TODO 10 commenter @Ignore pour que le test soit lancé
 @Ignore
 public class JavaConfigTest {
 
