@@ -49,7 +49,7 @@ public class HateoasIntegrationTest {
 		// les tâches suivantes sont à faire via l'API de Jackson (pas d'appel REST)
 		// TODO 10 récupérer le premier contact à partir de la variable nodes
 
-		// TODO 11 récupérer l'identifiant de la ressource (champ "id")
+		// TODO 11 récupérer le premier et unique lien (champ "links") 
 
 		// TODO 12 récupérer l'URL de détail (champ "href")
 		String detailUrl = null;

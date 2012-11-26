@@ -42,8 +42,8 @@ public class HateoasIntegrationTest {
 		JsonNode nodes = tpl.getForObject(BASE_URL+"contacts", JsonNode.class);
 		int totalElements = 12;
 		Assert.assertEquals(totalElements,nodes.size());
-		JsonNode node = nodes.get(0);
-		JsonNode detailLink = node.get("id");
+		JsonNode firstNode = nodes.get(0);
+		JsonNode detailLink = firstNode.get("links").get(0);
 		String detailUrl = detailLink.get("href").getTextValue();
 		
 		Contact contact = tpl.getForObject(detailUrl,Contact.class);
