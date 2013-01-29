@@ -4,6 +4,7 @@ import com.zenika.model.Contact;
 import com.zenika.repository.ContactRepository;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -31,10 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
  *
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
-@WebAppConfiguration
+// TODO 01 enlever l'annotation @Ignore
+@Ignore
+// TODO 02 mettre les annotations nécessaires à la configuration du test
 public class ContactControllerTest {
+
+    // TODO 03 analyser les propriétés nécessaires aux tests
 
     @Autowired
     WebApplicationContext ctx;
@@ -43,30 +46,28 @@ public class ContactControllerTest {
 
     MockMvc mockMvc;
 
-    @Before public void setUp() {
-        this.mockMvc = webAppContextSetup(ctx).build();
-        reset(repo);
-    }
+
+    // TODO 04 initialiser MockMvc et le mock du repository
+
+
+    // TODO 06 lancer le test pour vérifier que la configuration est correcte
 
     @Test
     public void contactExists() throws Exception {
-        Long id = 1L;
-        when(repo.findOne(id)).thenReturn(new Contact(id,"John","Doe",33));
-        mockMvc.perform(get("/contacts/{id}", id))
-//            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("id").value(1))
-            .andExpect(jsonPath("firstname").value("John"))
-            .andExpect(jsonPath("lastname").value("Doe"))
-            .andExpect(jsonPath("age").value(33));
+        // TODO 07 écrire le test pour la méthode contact
+        // on suppose que le contact demandé existe
+        // (regarder la méthode correspondante dans le controleur)
+
+        // TODO 08 lancer le test
     }
 
     @Test
     public void contactDoesNotExists() throws Exception {
-        Long id = 1L;
-        when(repo.findOne(1L)).thenReturn(null);
-        mockMvc.perform(get("/contacts/{id}", id))
-                .andExpect(status().isNotFound());
+        // TODO 09 écrire le test pour méthode contact
+        // on suppose que le contact n'existe pas
+        // (regarder la méthode correspondante dans le controleur)
+
+        // TODO 10 lancer le test
     }
 
     @Test public void contacts() throws Exception {
@@ -76,7 +77,6 @@ public class ContactControllerTest {
         ));
         mockMvc.perform(get("/contacts"))
                 .andExpect(status().isOk())
-//                .andDo(print())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].firstname").value("John"))
                 .andExpect(jsonPath("$[0].lastname").value("Doe"))
@@ -86,21 +86,17 @@ public class ContactControllerTest {
     }
 
     @Test public void create() throws Exception {
+        // TODO 11 écrire le test pour la méthode create
+        // (regarder la méthode correspondante dans le controleur)
+        // bien tester que le controleur retourne le bon statut et le bon header
+        // mais aussi que le document JSON envoyé est bien converti en objet Contact
+
         Contact toBeCreated = new Contact(1L,"John","Doe",33);
 
-        when(repo.save(any(Contact.class))).thenReturn(toBeCreated);
-        mockMvc.perform(post("/contacts")
-                    .content("{\"firstname\":\"John\",\"lastname\":\"Doe\",\"age\":33}")
-                    .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location","http://localhost/contacts/1"));
+        String contactJson = "{\"firstname\":\"John\",\"lastname\":\"Doe\",\"age\":33}";
 
-        ArgumentCaptor<Contact> contactCaptor = ArgumentCaptor.forClass(Contact.class);
-        verify(repo).save(contactCaptor.capture());
-        Contact captured = contactCaptor.getValue();
-        Assert.assertEquals(toBeCreated.getFirstname(),captured.getFirstname());
-        Assert.assertEquals(toBeCreated.getLastname(),captured.getLastname());
-        Assert.assertEquals(toBeCreated.getAge(),captured.getAge());
+
+        // TODO 12 lancer le test
     }
 
     @Test public void update() throws Exception {
@@ -127,6 +123,8 @@ public class ContactControllerTest {
         verify(repo).delete(1L);
     }
 
+
+    // TODO 05 écrire la classe de configuration
 
     @Configuration
     @EnableWebMvc

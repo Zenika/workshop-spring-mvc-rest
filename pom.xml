@@ -187,6 +187,7 @@
 		<module>spring-mvc-application-web-solution</module>
 		<module>spring-mvc-rest-start</module>
 		<module>spring-mvc-rest-solution</module>
+        <module>out-of-container-test-start</module>
         <module>out-of-container-test-solution</module>
 		<module>spring-mvc-content-negotiation-start</module>
 		<module>spring-mvc-content-negotiation-solution</module>
