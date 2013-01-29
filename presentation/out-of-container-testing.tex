@@ -1,0 +1,390 @@
+\section{Tests d'intégration hors-conteneur}
+\input{current-section.tex}
+
+\begin{frame}
+ \frametitle{Principes}
+ \begin{itemize}
+  \item Tester toute la stack Spring MVC
+  \begin{itemize}
+   \item validation, (dé)sérialisation, codes réponse, etc.
+  \end{itemize}
+  \item Sans utiliser un conteneur web
+  \begin{itemize}
+   \item Pas de requête HTTP
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Pourquoi ?}
+ 
+ \begin{itemize}
+  \item Tester toute la couche web
+  \begin{itemize}
+   \item Cas de base et cas limites
+  \end{itemize}
+  \item Utiliser des mock pour les services métiers
+  \begin{itemize}
+   \item Plus facile pour simuler tous les cas
+  \end{itemize}
+ \end{itemize} 
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration du test}
+ 
+ \begin{itemize}
+  \item Ajouter \code{@WebAppConfiguration}
+  \item Injecter le contexte Spring
+ \end{itemize}
+
+ 
+ \begin{javacode}
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WebAppConfiguration
+public class ContactControllerTest {
+
+  @Autowired
+  WebApplicationContext ctx;
+  
+  ...
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration dans le test}
+ 
+ \begin{itemize}
+  \item Classe interne statique, détectée automatiquement
+ \end{itemize}
+
+ 
+ \begin{javacode}
+public class ContactControllerTest {
+
+  ...
+  
+  @Configuration
+  @EnableWebMvc
+  @ComponentScan(basePackageClasses = ContactController.class)
+  public static class TestConfiguration {
+
+      @Bean
+      public ContactRepository contactRepository() {
+          return mock(ContactRepository.class);
+      }
+
+  }
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Initialisation de \code{MockMvc}}
+ 
+ \begin{javacode}
+public class ContactControllerTest {
+
+    @Autowired
+    WebApplicationContext ctx; // le contexte Spring
+
+    @Autowired ContactRepository repo; // une d\'ependance mock\'ee
+
+    MockMvc mockMvc; // Spring MVC, version mock
+
+    @Before public void setUp() {
+        this.mockMvc = webAppContextSetup(ctx) // m\'ethode statique 
+          .build();                            // Spring MVC test
+        reset(repo); // m\'ethode statique Mockito
+    }
+    ...
+}
+ \end{javacode}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Fluent API, le prix à payer}
+ 
+ \begin{javacode}
+import static o.m.Mockito.*;
+import static o.s.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static o.s.test.web.servlet.result.MockMvcResultMatchers.*;
+import static o.s.test.web.servlet.setup.MockMvcBuilders.*;
+import static o.s.test.web.servlet.result.MockMvcResultHandlers.*;
+ \end{javacode}
+
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Configuration du test}
+ 
+ \begin{javacode*}{fontsize=\tiny}
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WebAppConfiguration
+public class ContactControllerTest {
+
+    @Autowired WebApplicationContext ctx;
+
+    @Autowired ContactRepository repo;
+
+    MockMvc mockMvc;
+
+    @Before public void setUp() {
+        this.mockMvc = webAppContextSetup(ctx).build();
+        reset(repo);
+    }
+    ...
+    @Configuration
+    @EnableWebMvc
+    @ComponentScan(basePackageClasses = ContactController.class)
+    public static class TestConfiguration {
+
+        @Bean
+        public ContactRepository contactRepository() {
+            return mock(ContactRepository.class);
+        }
+
+    }
+}   
+ \end{javacode*}
+ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+ \frametitle{Méthode à tester}
+ 
+ \begin{javacode}
+@Controller
+public class ContactController {
+
+  @Autowired ContactRepository contactRepository;
+
+  @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+  @ResponseBody
+  public Contact contact(@PathVariable Long id) {		
+    Contact contact = contactRepository.findOne(id);
+    if(contact == null) {
+      throw new EmptyResultDataAccessException(1);
+    }
+    return contact;
+  }
+  
+}
+ \end{javacode}
+
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Lancer une requête}
+ 
+ \begin{javacode}
+@Test
+public void contactExists() throws Exception {
+    Long id = 1L;
+    when(repo.findOne(id)).thenReturn(new Contact(id,"John","Doe",33));
+    mockMvc.perform(get("/contacts/{id}", id))
+         .andDo(print()); // affichage requ\^ete/r\'eponse dans la console
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Voir ce qui se passe}
+ 
+ \begin{javacode}
+mockMvc.perform(get("/contacts/{id}", id)).andDo(print());
+ \end{javacode}
+ 
+ \begin{textcode}
+...
+MockHttpServletResponse:
+          Status = 200
+  Error message = null
+        Headers = {Content-Type=[application/json;charset=UTF-8]}
+   Content type = application/json;charset=UTF-8
+           Body = {"id":1,"firstname":"John","lastname":"Doe","age":33}
+  Forwarded URL = null
+ Redirected URL = null
+        Cookies = []
+...
+ \end{textcode}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tester un GET}
+ 
+ \begin{javacode}
+@Test
+public void contactExists() throws Exception {
+    Long id = 1L;
+    when(repo.findOne(id)).thenReturn(new Contact(id,"John","Doe",33));
+    mockMvc.perform(get("/contacts/{id}", id))
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("id").value(1))
+         .andExpect(jsonPath("firstname").value("John"))
+         .andExpect(jsonPath("lastname").value("Doe"))
+         .andExpect(jsonPath("age").value(33));
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Si la ressource n'existe pas...}
+ 
+ \begin{javacode}
+@Controller
+public class ContactController {
+
+  @Autowired ContactRepository contactRepository;
+
+  @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+  @ResponseBody
+  public Contact contact(@PathVariable Long id) {		
+    Contact contact = contactRepository.findOne(id);
+    if(contact == null) {
+      throw new EmptyResultDataAccessException(1);
+    }
+    return contact;
+  }
+  
+  @ExceptionHandler(EmptyResultDataAccessException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public void notFound() { }
+  
+}
+ \end{javacode}
+
+ 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tester un GET qui retourne 404}
+ 
+ \begin{javacode}
+@Test
+public void contactDoesNotExists() throws Exception {
+    Long id = 1L;
+    when(repo.findOne(1L)).thenReturn(null);
+    mockMvc.perform(get("/contacts/{id}", id))
+            .andExpect(status().isNotFound());
+}
+ \end{javacode}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+ \frametitle{Un GET qui retourne un tableau}
+ 
+ \begin{textcode}
+[ 
+  {"id":1,"firstname":"John","lastname":"Doe","age":33},
+  {"id":2,"firstname":"Jane","lastname":"Doe","age":30}
+]
+ \end{textcode} 
+
+ \begin{javacode}
+@Test public void contacts() throws Exception {
+    when(repo.findAll()).thenReturn(Arrays.asList(
+            new Contact(1L,"John","Doe",33),
+            new Contact(2L,"Jane","Doe",30)
+    ));
+    mockMvc.perform(get("/contacts"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].id").value(1))
+        .andExpect(jsonPath("$[0].firstname").value("John"))
+        .andExpect(jsonPath("$[0].lastname").value("Doe"))
+        .andExpect(jsonPath("$[1].id").value(2))
+        .andExpect(jsonPath("$[1].firstname").value("Jane"))
+        .andExpect(jsonPath("$[1].lastname").value("Doe"));
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Une méthode POST avec un corps}
+ 
+ \begin{javacode}
+@RequestMapping(value="/contacts",method=RequestMethod.POST)
+@ResponseStatus(HttpStatus.CREATED)
+public void create(@RequestBody Contact contact, 
+                   HttpServletRequest request, 
+                   HttpServletResponse response) {
+  contact = contactRepository.save(contact);
+  String location = ServletUriComponentsBuilder.fromRequest(request)
+    .pathSegment("{id}")
+    .build()
+    .expand(contact.getId())
+    .encode()
+    .toUriString();
+  response.setHeader("Location", location);
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tester une méthode POST avec un corps}
+ 
+ \begin{javacode}
+@Test public void create() throws Exception {
+    Contact toBeCreated = new Contact(1L,"John","Doe",33);
+
+    when(repo.save(any(Contact.class))).thenReturn(toBeCreated);
+    mockMvc.perform(post("/contacts")
+        .content(
+          "{\"firstname\":\"John\",\"lastname\":\"Doe\",\"age\":33}"
+        )
+        .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isCreated())
+      .andExpect(header().string(
+         "Location","http://localhost/contacts/1")
+      );
+
+    (...)
+}
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Tester une méthode POST avec un corps (suite)}
+ 
+ \begin{javacode}
+@Test public void create() throws Exception {
+    Contact toBeCreated = new Contact(1L,"John","Doe",33);
+
+    (...)
+    // JSON => Contact OK ?
+    ArgumentCaptor<Contact> contactCaptor = ArgumentCaptor.forClass(
+      Contact.class
+    );
+    verify(repo).save(contactCaptor.capture());
+    Contact captured = contactCaptor.getValue();
+    Assert.assertEquals(toBeCreated.getFirstname(),
+      captured.getFirstname());
+    Assert.assertEquals(toBeCreated.getLastname(),
+      captured.getLastname());
+    Assert.assertEquals(toBeCreated.getAge(),
+      captured.getAge());
+}
+ \end{javacode}
+
+\end{frame}

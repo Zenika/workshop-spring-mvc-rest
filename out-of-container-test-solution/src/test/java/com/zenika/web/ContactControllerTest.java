@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
@@ -52,9 +53,9 @@ public class ContactControllerTest {
     @Test
     public void contactExists() throws Exception {
         Long id = 1L;
-        when(repo.findOne(1L)).thenReturn(new Contact(id,"John","Doe",33));
+        when(repo.findOne(id)).thenReturn(new Contact(id,"John","Doe",33));
         mockMvc.perform(get("/contacts/{id}", id))
-//            .andDo(MockMvcResultHandlers.print())
+//            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("id").value(1))
             .andExpect(jsonPath("firstname").value("John"))
@@ -77,6 +78,7 @@ public class ContactControllerTest {
         ));
         mockMvc.perform(get("/contacts"))
                 .andExpect(status().isOk())
+//                .andDo(print())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].firstname").value("John"))
                 .andExpect(jsonPath("$[0].lastname").value("Doe"))
