@@ -148,6 +148,13 @@
 			<version>${jetty.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${jsonpath.version}</version>
+            <scope>test</scope>
+        </dependency>
 		
 	</dependencies>
 
@@ -167,6 +174,7 @@
 		<junit.version>4.11</junit.version>
 		<jetty.version>8.1.8.v20121106</jetty.version>
 		<tomcat.version>6.0.35</tomcat.version>
+        <jsonpath.version>0.8.1</jsonpath.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -179,6 +187,7 @@
 		<module>spring-mvc-application-web-solution</module>
 		<module>spring-mvc-rest-start</module>
 		<module>spring-mvc-rest-solution</module>
+        <module>out-of-container-test-solution</module>
 		<module>spring-mvc-content-negotiation-start</module>
 		<module>spring-mvc-content-negotiation-solution</module>
 		<module>spring-mvc-hateoas-start</module>
