@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -72,6 +73,16 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 				.toUriString();
 		Link link = new Link(path,rel);
 		return link;
+	}
+	
+	@Override
+	public Pageable nextPageable() {
+		return null;
+	}
+	
+	@Override
+	public Pageable previousPageable() {
+		return null;
 	}
 	
 	@Override
