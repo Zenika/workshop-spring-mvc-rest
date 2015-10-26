@@ -5,17 +5,17 @@ package com.zenika;
 
 import java.net.URI;
 
-import junit.framework.Assert;
-
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import com.zenika.model.Contact;
@@ -25,20 +25,19 @@ import com.zenika.model.Contact;
  * @author acogoluegnes
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(RestApplication.class)
+@WebIntegrationTest(randomPort=true)
 public class RestControllerIntegrationTest {
 	
-	private RestTemplate tpl = new RestTemplate();
+	RestOperations tpl = new RestTemplate();
 	
-	private final String url = "http://localhost:8080/crud-rest/zen-contact/";
+	String url = "http://localhost:{port}/";
 	
-	private static Server server;
+	@Value("${local.server.port}") String port;
 	
-	@BeforeClass public static void setUp() throws Exception {
-		startServer();        
-	}
-	
-	@AfterClass public static void tearDown() throws Exception {
-		server.stop();
+	@Before public void setUp() {
+		url = url.replace("{port}", port);
 	}
 	
 	@Test public void selectAndFindOne() throws Exception {
@@ -84,24 +83,6 @@ public class RestControllerIntegrationTest {
 		} catch (HttpStatusCodeException e) {
 			Assert.assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
 		}
-	}
-
-	private static void startServer() throws Exception {
-		server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
-		connector.setHost("127.0.0.1");
-		server.addConnector(connector);
-
-		String app = "crud-rest";
-		
-		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/"+app);
-		wac.setWar("./src/main/webapp");
-		server.setHandler(wac);
-		server.setStopAtShutdown(true);
-
-		server.start();
 	}
 
 }

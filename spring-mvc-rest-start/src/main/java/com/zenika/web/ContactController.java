@@ -8,7 +8,7 @@ package com.zenika.web;
  * @author acogoluegnes
  *
  */
-// TODO 01 annoter le contrôleur avec @Controller
+// TODO 01 annoter le contrôleur avec @RestController
 public class ContactController {
 	
 	// TODO 02 injecter le ContactRepository (avec @Autowired}
@@ -18,23 +18,23 @@ public class ContactController {
 	// opération : GET
 
 	
-	// TODO 08 créer une méthode contact pour récupérer un contact avec son identifiant
+	// TODO 07 créer une méthode contact pour récupérer un contact avec son identifiant
 	// URL : /contacts/{id}
 	// opération : GET
 	
 	
-	// TODO 12 créer une méthode create pour sauvegarder un contact
+	// TODO 11 créer une méthode create pour sauvegarder un contact
 	// URL : /contacts
 	// opération : POST
 	// bien retourner l'entête Location
 	
 	
-	// TODO 20 créer une méthode update pour mettre à jour un contact
+	// TODO 19 créer une méthode update pour mettre à jour un contact
 	// URL : /contacts/{id}
 	// opération : PUT
 	
 	
-	// TODO 25 créer une méthode delete pour supprimer un contact
+	// TODO 24 créer une méthode delete pour supprimer un contact
 	// URL : /contacts/{id}
 	// opération : DELETE
 	

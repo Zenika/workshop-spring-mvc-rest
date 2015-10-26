@@ -19,17 +19,17 @@
 
 \begin{frame}
  \frametitle{Contrôleur application web}
- 
+
  \begin{itemize}
   \item Remplit un \code{Model} de données
   \item Indique quelle vue doit être rendue
- \end{itemize} 
+ \end{itemize}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Contrôleur application web}
- 
+
  \begin{javacode}
 @Controller
 public class ContactController {
@@ -40,7 +40,7 @@ public class ContactController {
     model.addAttribute(contact); // pour la vue
     return "/WEB-INF/views/contact.jsp"; // la vue \`a utiliser
   }
-  
+
 }
  \end{javacode}
 
@@ -48,12 +48,12 @@ public class ContactController {
 
 \begin{frame}[fragile]
  \frametitle{La vue}
- 
+
  \begin{itemize}
   \item Plusieurs technologies supportées : JSP, Freemarker, Velocity
-  \item JSP le plus courant
- \end{itemize} 
- 
+  \item JSP très couramment utilisé
+ \end{itemize}
+
  \begin{xmlcode}
 <html>
   <head>

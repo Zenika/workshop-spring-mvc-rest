@@ -20,87 +20,39 @@
 
 \begin{frame}
  \frametitle{\code{DispatcherServlet}}
- 
+
  \begin{itemize}
   \item Le coeur de Spring MVC
   \item Coordonne des composants d'infrastructure
-  \item Démarre son propre contexte Spring, il contient :
-  \begin{itemize}
-   \item Les contrôleurs de l'application
-   \item Des beans d'infrastructure
-  \end{itemize}
+  \item Appelle les contrôleurs applicatifs
  \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Déclarer une \code{DispatcherServlet} dans le \code{web.xml}}
- 
- \begin{xmlcode}
-<servlet>
-  <servlet-name>spring-mvc</servlet-name>
-  <servlet-class>
-    org.springframework.web.servlet.DispatcherServlet
-  </servlet-class>
-  <init-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/spring-mvc-servlet.xml</param-value>
-  </init-param>
-  <load-on-startup>1</load-on-startup>
-</servlet>
-
-<servlet-mapping>
-  <servlet-name>spring-mvc</servlet-name>
-  <url-pattern>/zen-contact/*</url-pattern>
-</servlet-mapping>
- \end{xmlcode}
- 
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fichier Spring de la \code{DispatcherServlet}}
- 
-  \begin{itemize}
-   \item Si pas de fichier précisé, utilise un chemin par défaut
-   \item Convention : \code{/WEB-INF/\$\{servlet-name\}-servlet.xml}
-  \end{itemize}
-  
- \begin{xmlcode}
-<!-- utilise my-app-servlet.xml -->
-<servlet>
-  <servlet-name>my-app</servlet-name>
-  <servlet-class>
-    org.springframework.web.servlet.DispatcherServlet
-  </servlet-class>  
-</servlet>
- \end{xmlcode}
- 
-\end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Contrôleur ``Hello World''}
- 
+
   \begin{itemize}
    \item Les contrôleurs sont des POJO annotés
   \end{itemize}
-  
+
  \begin{javacode}
-@Controller // indique \`a Spring que c'est un contr\^oleur
+@RestController // indique \`a Spring que c'est un contr\^oleur
 public class HelloWorldController {
 
   @RequestMapping("/hello") // quel URL ?
-  @ResponseBody // mettre l'objet retourn\'e dans le corps de la r\'eponse
   public String hello() {
     return "Hello World!";
   }
-  
+
 }
  \end{javacode}
- 
+
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}
  \frametitle{Les contrôleurs sont des beans Spring}
- 
+
   \begin{itemize}
    \item Il faut bien déclarer les contrôleurs dans Spring
    \item Une solution est le component scanning
@@ -108,170 +60,26 @@ public class HelloWorldController {
     \item Déclarations en XML ou en Java fonctionnent aussi
    \end{itemize}
   \end{itemize}
-  
- \begin{xmlcode}
-<context:component-scan base-package="com.zenika.web" />
- \end{xmlcode}
- 
+
 \end{frame}
 
-\begin{frame}
- \frametitle{Root application context}
- 
+\begin{frame}[fragile]
+ \frametitle{Comment démarrer ?}
+
   \begin{itemize}
-   \item Contexte Spring de l'application web
-   \item Indépendant de Spring MVC
-   \item Contient généralement
-   \begin{itemize}
-    \item Services, repositories
-    \item \code{DataSource}, transaction manager
-   \end{itemize}
+    \item Utiliser Spring Boot
+    \item Gère les dépendances, la \code{DispatcherServlet}, etc.
   \end{itemize}
- 
-\end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Déclarer le root application context dans le \code{web.xml}}
-  
- \begin{xmlcode}
-<context-param>
-  <param-name>contextConfigLocation</param-name>
-  <param-value>
-    /WEB-INF/applicationContext.xml
-  </param-value>
-</context-param>
+  \begin{javacode}
+ @SpringBootApplication // g\`ere notamment le component scanning
+ public class SpringMvcOverviewApplication {
 
-<listener>
-  <listener-class>
-    org.springframework.web.context.ContextLoaderListener
-  </listener-class>
-</listener>
- \end{xmlcode}
- 
-\end{frame}
+   public static void main(String[] args) {
+     SpringApplication.run(SpringMvcOverviewApplication.class, args);
+   }
 
-\begin{frame}
- \frametitle{Root application context et \code{DispatcherServlet}}
- 
- \begin{itemize}
-  \item La \code{DispatcherServlet} se branche sur le root application context
-  \begin{itemize}
-   \item S'il a été déclaré
-  \end{itemize}
-  \item Relation parent-enfant entre les contextes Spring
-  \item Beans du root contexte visibles pour les beans de la \code{DispatcherServlet}
-  \begin{itemize}
-   \item Pas l'inverse
-  \end{itemize}
- \end{itemize}
- 
-\end{frame}
+ }
+  \end{javacode}
 
-\begin{frame}[fragile]
- \frametitle{Root application context et \code{DispatcherServlet}}
- 
- \begin{xmlcode}
-<!-- Dans le contexte de la DispatcherServlet -->
-<bean class="com.zenika.web.HelloWorldController">
-  <!-- contactService est d\'eclar\'e dans le root context -->
-  <property name="contactService" 
-            ref="contactService />
-</bean>
- \end{xmlcode}
-
-\end{frame}
- 
- \begin{frame}
- \frametitle{Configuration Java, sans \code{web.xml}}
- 
- \begin{itemize}
-  \item Possibilité de configurer Spring en Java
-  \item Depuis Servlet 3.0, configuration sans \code{web.xml}
-  \item 0 XML !
- \end{itemize}
- 
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Configuration de Spring MVC en Java}
- 
- \begin{javacode}
-@Configuration // c'est une classe de configuration
-@ComponentScan(basePackageClasses=HelloWorldController.class)
-@EnableWebMvc  // configuration REST de Spring MVC
-public class HelloWorldConfiguration 
-       extends WebMvcConfigurerAdapter { // surcharger des m\'ethodes 
-                                         // (si n\'ecessaire)
-	
-}
- \end{javacode}
-
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Initialisation de l'application}
- 
- \begin{javacode}
-public class HelloWorldWebApplicationInitializer
-       implements WebApplicationInitializer {
-
-  @Override
-  public void onStartup(ServletContext servletContext)
-              throws ServletException {
-    // cr\'eation root application context
-    // et servlet
-  }
-
-}
- \end{javacode}
- 
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Initialisation de l'application (root context)}
- 
- \begin{javacode}
-public class HelloWorldWebApplicationInitializer
-       implements WebApplicationInitializer {
-
-  @Override
-  public void onStartup(ServletContext servletContext)
-              throws ServletException {
-
-    AnnotationConfigWebApplicationContext rootContext =
-      new AnnotationConfigWebApplicationContext();
-    rootContext.register(BackendApplicationConfiguration.class);
-    servletContext.addListener(new ContextLoaderListener(rootContext));
-    (...)
-  }
-
-}
- \end{javacode}
- 
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Initialisation de l'application (dispatcher servlet)}
- 
- \begin{javacode}
-public class HelloWorldWebApplicationInitializer
-       implements WebApplicationInitializer {
-
-  @Override
-  public void onStartup(ServletContext servletContext)
-              throws ServletException {
-    (...)
-    AnnotationConfigWebApplicationContext dispatcherContext =
-      new AnnotationConfigWebApplicationContext();
-    dispatcherContext.register(HelloWorldConfiguration.class);
-    ServletRegistration.Dynamic dispatcher = servletContext.addServlet(
-      "dispatcher", new DispatcherServlet(dispatcherContext)
-    );
-    dispatcher.setLoadOnStartup(1);
-    dispatcher.addMapping("/zen-contact/*");
-  }
-
-}
- \end{javacode}
- 
 \end{frame}

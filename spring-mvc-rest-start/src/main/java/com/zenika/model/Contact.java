@@ -3,21 +3,29 @@
  */
 package com.zenika.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 /**
  * 
  * @author acogoluegnes
  * 
  */
-@Entity
 public class Contact {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	public Contact() {}
+
+	public Contact(Long id, String firstname, String lastname, int age) {
+		this.id = id;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.age = age;
+	}
+
+	public Contact(int age, String firstname, String lastname, Long id) {
+		this.id = id;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.age = age;
+	}
+
 	private Long id;
 
 	private String firstname, lastname;

@@ -3,9 +3,8 @@
  */
 package com.zenika;
 
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
@@ -22,7 +21,7 @@ public class LaunchHelloWorld {
 		
 		// TODO 06 une fois lancé, vérifier la page http://localhost:8080/hello-world/zen-contact/hello
 		Server server = new Server();
-		Connector connector = new SelectChannelConnector();
+		ServerConnector connector = new ServerConnector(server);
 		connector.setPort(8080);
 		connector.setHost("127.0.0.1");
 		server.addConnector(connector);

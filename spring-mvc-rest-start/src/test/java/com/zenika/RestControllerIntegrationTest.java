@@ -3,14 +3,21 @@
  */
 package com.zenika;
 
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+
+import java.net.URI;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import com.zenika.model.Contact;
@@ -20,40 +27,39 @@ import com.zenika.model.Contact;
  * @author acogoluegnes
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(RestApplication.class)
+@WebIntegrationTest(randomPort=true)
 public class RestControllerIntegrationTest {
 	
-	private RestTemplate tpl = new RestTemplate();
+	RestOperations tpl = new RestTemplate();
 	
-	private final String url = "http://localhost:8080/crud-rest/zen-contact/";
+	String url = "http://localhost:{port}/";
 	
-	private static Server server;
+	@Value("${local.server.port}") String port;
 	
-	@BeforeClass public static void setUp() throws Exception {
-		startServer();        
-	}
-	
-	@AfterClass public static void tearDown() throws Exception {
-		server.stop();
+	@Before public void setUp() {
+		url = url.replace("{port}", port);
 	}
 	
 	@Test public void selectAndFindOne() throws Exception {
-		// TODO 05 récupérer la liste des contacts
+		// TODO 04 récupérer la liste des contacts
 		// (utiliser la propriété url pour le début du chemin)
 		
-		// TODO 06 vérifier que le nombre de contact est bon
+		// TODO 05 vérifier que le nombre de contact est bon
 		// (il y a 12 contacts, voir le fichier data.sql)
 		
-		// TODO 07 lancer le test
+		// TODO 06 lancer le test (il doit passer)
 		
-		// TODO 09 récupérer un contact par son identifiant
+		// TODO 08 récupérer un contact par son identifiant
 		// (prendre l'identifiant du premier contact du tableau de contacts)
 		
-		// TODO 10 vérifier que l'identifiant du contact récupéré est le bon
+		// TODO 09 vérifier que l'identifiant du contact récupéré est le bon
 		
-		// TODO 11 lancer le test
+		// TODO 10 lancer le test (il doit passer)
 	}
 	
-	// TODO 13 enlever @Ignore de la méthode de test
+	// TODO 12 enlever @Ignore de la méthode de test
 	@Ignore
 	@Test public void crud() throws Exception {
 		int initialCount = tpl.getForObject(url+"contacts", Contact[].class).length;
@@ -62,57 +68,39 @@ public class RestControllerIntegrationTest {
 		contact.setLastname("Picsou");
 		contact.setAge(100);
 		
-		// TODO 14 envoyer le contact ci-dessus pour création
+		// TODO 13 envoyer le contact ci-dessus pour création
 		
 		
-		// TODO 15 vérifier qu'il y a bien un contact en plus
+		// TODO 14 vérifier qu'il y a bien un contact en plus
 		// (récupérer la liste des contacts et vérifier le compte)
 		
-		// TODO 16 lancer le test
+		// TODO 15 lancer le test (il doit passer)
 		
-		// TODO 17 récupérer le contact nouvellement créé (grâche à son URI)
+		// TODO 16 récupérer le contact nouvellement créé (grâche à son URI)
 		Contact lookedUpContact = null;
 		
-		// TODO 18 vérifier que les propriétés du contact sont correctes
+		// TODO 17 vérifier que les propriétés du contact sont correctes
 		// (comparer les propriétés de contact avec celles de lookedUpContact)
 		
-		// TODO 19 lancer le test
+		// TODO 18 lancer le test
 		
-		// TODO 21 positionner le nouvel âge sur lookedUpContact et envoyer la mise à jour au serveur		
+		// TODO 20 positionner le nouvel âge sur lookedUpContact et envoyer la mise à jour au serveur		
 		int newAge = 90;
 		
-		// TODO 22 récupérer le contact pour s'assurer que le nouvel âge a bien été positionné
+		// TODO 21 récupérer le contact pour s'assurer que le nouvel âge a bien été positionné
 
 		
-		// TODO 23 s'assurer que le compte de contacts est toujours bon (initialCount + 1)
+		// TODO 22 s'assurer que le compte de contacts est toujours bon (initialCount + 1)
 		
-		// TODO 24 lancer le test
+		// TODO 23 lancer le test
 		
-		// TODO 26 supprimer le contact
+		// TODO 25 supprimer le contact
 		
-		// TODO 27 s'assurer que le compte de contact est bon (revenu à initialCount)
+		// TODO 26 s'assurer que le compte de contact est bon (revenu à initialCount)
 
 		
 		// TODO Bonus 02 tenter de récupérer le contact et vérifier que l'on récupère une 404
 		
-	}
-
-	private static void startServer() throws Exception {
-		server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
-		connector.setHost("127.0.0.1");
-		server.addConnector(connector);
-
-		String app = "crud-rest";
-		
-		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/"+app);
-		wac.setWar("./src/main/webapp");
-		server.setHandler(wac);
-		server.setStopAtShutdown(true);
-
-		server.start();
 	}
 
 }

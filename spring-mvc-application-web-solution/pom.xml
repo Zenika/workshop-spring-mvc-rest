@@ -11,18 +11,19 @@
 	<artifactId>spring-mvc-application-web-solution</artifactId>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
-			<artifactId>jasper</artifactId>
-			<version>${tomcat.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>servlet-api</artifactId>
-					<groupId>org.apache.tomcat</groupId>
-				</exclusion>
-			</exclusions>
+			<artifactId>tomcat-jasper</artifactId>
+			<version>8.0.27</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
 </project>

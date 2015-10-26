@@ -3,24 +3,21 @@
  */
 package com.zenika.web;
 
+import java.net.URI;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.zenika.model.Contact;
 import com.zenika.repository.ContactRepository;
@@ -29,14 +26,13 @@ import com.zenika.repository.ContactRepository;
  * @author acogoluegnes
  *
  */
-@Controller
+@RestController
 public class ContactController {
 	
 	@Autowired ContactRepository contactRepository;
 
 	// gestion des erreurs solution 1
 	@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
-	@ResponseBody
 	public Contact contact(@PathVariable Long id) {		
 		Contact contact = contactRepository.findOne(id);
 		if(contact == null) {
@@ -61,22 +57,20 @@ public class ContactController {
 //	}
 	
 	@RequestMapping(value="/contacts",method=RequestMethod.GET)
-	@ResponseBody 
 	public List<Contact> contacts() {
 		return contactRepository.findAll();
 	}
 	
 	@RequestMapping(value="/contacts",method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	public void create(@RequestBody Contact contact, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<Void> create(@RequestBody Contact contact, UriComponentsBuilder uriComponentsBuilder) {
 		contactRepository.save(contact);
-		String location = ServletUriComponentsBuilder.fromRequest(request)
-			.pathSegment("{id}")
+		URI location = uriComponentsBuilder
+			.pathSegment("contacts","{id}")
 			.build()
 			.expand(contact.getId())
 			.encode()
-			.toUriString();
-		response.setHeader("Location", location);
+			.toUri();
+		return ResponseEntity.created(location).build();
 	}
 	
 	@RequestMapping(value="/contacts/{id}",method=RequestMethod.PUT)
