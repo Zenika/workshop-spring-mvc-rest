@@ -17,7 +17,7 @@
 
 \begin{frame}
  \frametitle{Pourquoi ?}
- 
+
  \begin{itemize}
   \item Tester toute la couche web
   \begin{itemize}
@@ -27,19 +27,19 @@
   \begin{itemize}
    \item Plus facile pour simuler tous les cas
   \end{itemize}
- \end{itemize} 
+ \end{itemize}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Configuration du test}
- 
+
  \begin{itemize}
   \item Ajouter \code{@WebAppConfiguration}
   \item Injecter le contexte Spring
  \end{itemize}
 
- 
+
  \begin{javacode}
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -48,7 +48,7 @@ public class ContactControllerTest {
 
   @Autowired
   WebApplicationContext ctx;
-  
+
   ...
 }
  \end{javacode}
@@ -57,17 +57,17 @@ public class ContactControllerTest {
 
 \begin{frame}[fragile]
  \frametitle{Configuration dans le test}
- 
+
  \begin{itemize}
   \item Classe interne statique, détectée automatiquement
  \end{itemize}
 
- 
+
  \begin{javacode}
 public class ContactControllerTest {
 
   ...
-  
+
   @Configuration
   @EnableWebMvc
   @ComponentScan(basePackageClasses = ContactController.class)
@@ -86,7 +86,7 @@ public class ContactControllerTest {
 
 \begin{frame}[fragile]
  \frametitle{Initialisation de \code{MockMvc}}
- 
+
  \begin{javacode}
 public class ContactControllerTest {
 
@@ -98,7 +98,7 @@ public class ContactControllerTest {
     MockMvc mockMvc; // Spring MVC, version mock
 
     @Before public void setUp() {
-        this.mockMvc = webAppContextSetup(ctx) // m\'ethode statique 
+        this.mockMvc = webAppContextSetup(ctx) // m\'ethode statique
           .build();                            // Spring MVC test
         reset(repo); // m\'ethode statique Mockito
     }
@@ -111,7 +111,7 @@ public class ContactControllerTest {
 
 \begin{frame}[fragile]
  \frametitle{Fluent API, le prix à payer}
- 
+
  \begin{javacode}
 import static o.m.Mockito.*;
 import static o.s.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -120,12 +120,12 @@ import static o.s.test.web.servlet.setup.MockMvcBuilders.*;
 import static o.s.test.web.servlet.result.MockMvcResultHandlers.*;
  \end{javacode}
 
- 
+
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Configuration du test}
- 
+
  \begin{javacode*}{fontsize=\tiny}
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -154,40 +154,39 @@ public class ContactControllerTest {
         }
 
     }
-}   
+}
  \end{javacode*}
- 
+
 \end{frame}
 
 
 \begin{frame}[fragile]
  \frametitle{Méthode à tester}
- 
+
  \begin{javacode}
-@Controller
+@RestController
 public class ContactController {
 
   @Autowired ContactRepository contactRepository;
 
   @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
-  @ResponseBody
-  public Contact contact(@PathVariable Long id) {		
+  public Contact contact(@PathVariable Long id) {
     Contact contact = contactRepository.findOne(id);
     if(contact == null) {
       throw new EmptyResultDataAccessException(1);
     }
     return contact;
   }
-  
+
 }
  \end{javacode}
 
- 
+
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Lancer une requête}
- 
+
  \begin{javacode}
 @Test
 public void contactExists() throws Exception {
@@ -202,11 +201,11 @@ public void contactExists() throws Exception {
 
 \begin{frame}[fragile]
  \frametitle{Voir ce qui se passe}
- 
+
  \begin{javacode}
 mockMvc.perform(get("/contacts/{id}", id)).andDo(print());
  \end{javacode}
- 
+
  \begin{textcode}
 ...
 MockHttpServletResponse:
@@ -226,7 +225,7 @@ MockHttpServletResponse:
 
 \begin{frame}[fragile]
  \frametitle{Tester un GET}
- 
+
  \begin{javacode}
 @Test
 public void contactExists() throws Exception {
@@ -245,36 +244,35 @@ public void contactExists() throws Exception {
 
 \begin{frame}[fragile]
  \frametitle{Si la ressource n'existe pas...}
- 
+
  \begin{javacode}
-@Controller
+@RestController
 public class ContactController {
 
   @Autowired ContactRepository contactRepository;
 
   @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
-  @ResponseBody
-  public Contact contact(@PathVariable Long id) {		
+  public Contact contact(@PathVariable Long id) {
     Contact contact = contactRepository.findOne(id);
     if(contact == null) {
       throw new EmptyResultDataAccessException(1);
     }
     return contact;
   }
-  
+
   @ExceptionHandler(EmptyResultDataAccessException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public void notFound() { }
-  
+
 }
  \end{javacode}
 
- 
+
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Tester un GET qui retourne 404}
- 
+
  \begin{javacode}
 @Test
 public void contactDoesNotExists() throws Exception {
@@ -291,13 +289,13 @@ public void contactDoesNotExists() throws Exception {
 
 \begin{frame}[fragile]
  \frametitle{Un GET qui retourne un tableau}
- 
+
  \begin{textcode}
-[ 
+[
   {"id":1,"firstname":"John","lastname":"Doe","age":33},
   {"id":2,"firstname":"Jane","lastname":"Doe","age":30}
 ]
- \end{textcode} 
+ \end{textcode}
 
  \begin{javacode}
 @Test public void contacts() throws Exception {
@@ -320,21 +318,19 @@ public void contactDoesNotExists() throws Exception {
 
 \begin{frame}[fragile]
  \frametitle{Une méthode POST avec un corps}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts",method=RequestMethod.POST)
-@ResponseStatus(HttpStatus.CREATED)
-public void create(@RequestBody Contact contact, 
-                   HttpServletRequest request, 
-                   HttpServletResponse response) {
-  contact = contactRepository.save(contact);
-  String location = ServletUriComponentsBuilder.fromRequest(request)
-    .pathSegment("{id}")
-    .build()
-    .expand(contact.getId())
-    .encode()
-    .toUriString();
-  response.setHeader("Location", location);
+public ResponseEntity<Void> create(@RequestBody Contact contact,
+                         UriComponentsBuilder uriComponentsBuilder) {
+ contact = contactRepository.save(contact);
+ URI location = uriComponentsBuilder
+   .pathSegment("contacts","{id}")
+   .build()
+   .expand(contact.getId())
+   .encode()
+   .toUri();
+  return ResponseEntity.created(location).build();
 }
  \end{javacode}
 
@@ -342,7 +338,7 @@ public void create(@RequestBody Contact contact,
 
 \begin{frame}[fragile]
  \frametitle{Tester une méthode POST avec un corps}
- 
+
  \begin{javacode}
 @Test public void create() throws Exception {
     Contact toBeCreated = new Contact(1L,"John","Doe",33);
@@ -366,7 +362,7 @@ public void create(@RequestBody Contact contact,
 
 \begin{frame}[fragile]
  \frametitle{Tester une méthode POST avec un corps (suite)}
- 
+
  \begin{javacode}
 @Test public void create() throws Exception {
     Contact toBeCreated = new Contact(1L,"John","Doe",33);
