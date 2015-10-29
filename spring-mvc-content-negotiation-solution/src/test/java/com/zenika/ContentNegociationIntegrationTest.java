@@ -6,21 +6,20 @@ package com.zenika;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.zenika.model.Contact;
@@ -32,23 +31,22 @@ import com.zenika.web.LogClientHttpRequestInterceptor;
  * @author acogoluegnes
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(ContentNegociationApplication.class)
+@WebIntegrationTest(randomPort=true)
 public class ContentNegociationIntegrationTest {
 	
-	private static RestTemplate tpl = new RestTemplate();
+	RestTemplate tpl = new RestTemplate();
 	
-	private final String url = "http://localhost:8080/content-negotiation/zen-contact/";
+	String url = "http://localhost:{port}/";
 	
-	private static Server server;
+	@Value("${local.server.port}") String port;
 	
-	@BeforeClass public static void setUp() throws Exception {
-		startServer();
+	@Before public void setUp() {
+		url = url.replace("{port}", port);
 		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
 		interceptors.add(new LogClientHttpRequestInterceptor());
 		tpl.setInterceptors(interceptors);
-	}
-	
-	@AfterClass public static void tearDown() throws Exception {
-		server.stop();
 	}
 	
 	@Test public void contentNegotiation() throws Exception {
@@ -58,7 +56,7 @@ public class ContentNegociationIntegrationTest {
 		Assert.assertEquals(id,contact.getId());
 		
 		List<HttpMessageConverter<?>> convs = new ArrayList<HttpMessageConverter<?>>();
-		convs.add(new MappingJacksonHttpMessageConverter());
+		convs.add(new MappingJackson2HttpMessageConverter());
 		tpl.setMessageConverters(convs);
 		ResponseEntity<Contact> entity = tpl.getForEntity(url+"contacts/{id}", Contact.class,id);
 		Assert.assertTrue(MediaType.APPLICATION_JSON.includes(entity.getHeaders().getContentType()));
@@ -76,22 +74,6 @@ public class ContentNegociationIntegrationTest {
 		Assert.assertTrue(CsvHttpMessageConverter.CSV_MEDIA_TYPE.includes(entity.getHeaders().getContentType()));
 	}
 	
-	private static void startServer() throws Exception {
-		server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
-		connector.setHost("127.0.0.1");
-		server.addConnector(connector);
-
-		String app = "content-negotiation";
-		
-		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/"+app);
-		wac.setWar("./src/main/webapp");
-		server.setHandler(wac);
-		server.setStopAtShutdown(true);
-
-		server.start();
-	}
+	
 
 }

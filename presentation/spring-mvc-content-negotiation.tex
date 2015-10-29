@@ -23,7 +23,7 @@
   \item Requête
  \end{itemize}
  \begin{textcode}
-GET /content-negotiation/zen-contact/contacts/1 HTTP/1.1
+GET /contacts/1 HTTP/1.1
 Accept: application/xml, text/xml, application/*+xml, application/json
 Host: localhost:8080
  \end{textcode}
@@ -64,13 +64,13 @@ Content-Type: application/xml
 
 \begin{frame}[fragile]
  \frametitle{Désérialisation/sérialisation}
- 
+
  \begin{javacode}
 // d\'es\'erialiser le corps de la requ\^ete pour obtenir un Contact
 @RequestMapping(value="/contacts",method=RequestMethod.POST)
 @ResponseStatus(HttpStatus.CREATED)
-public void create(@RequestBody Contact contact, 
-                   HttpServletRequest request, 
+public void create(@RequestBody Contact contact,
+                   HttpServletRequest request,
                    HttpServletResponse response) {
   (...)
 }
@@ -78,8 +78,7 @@ public void create(@RequestBody Contact contact,
 // s\'erialiser le Contact retourn\'e
 // puis le mettre dans le corps de la r\'eponse
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
-@ResponseBody
-public Contact contact(@PathVariable Long id) {    
+public Contact contact(@PathVariable Long id) {
   return contactRepository.findOne(id);
 }
  \end{javacode}
@@ -88,16 +87,16 @@ public Contact contact(@PathVariable Long id) {
 
 \begin{frame}[fragile]
  \frametitle{Désérialisation/sérialisation}
- 
+
  \begin{itemize}
   \item Idem avec le \code{RestTemplate}
  \end{itemize}
 
- 
+
  \begin{javacode}
 // d\'es\'erialiser le corps de la r\'eponse pour obtenir un Contact
 Contact contact = tpl.getForObject(
-  "http://localhost:8080/crud-rest/zen-contact/contacts/1", 
+  "http://localhost:8080/contacts/1",
   Contact.class,
   id
 );
@@ -106,7 +105,7 @@ Contact contact = tpl.getForObject(
 // puis le mettre dans le corps de la requ\^ete
 Contact contact = new Contact();
 URI location = tpl.postForLocation(
-  "http://localhost:8080/crud-rest/zen-contact/contacts",
+  "http://localhost:8080/contacts",
   contact
 );
  \end{javacode}
@@ -115,7 +114,7 @@ URI location = tpl.postForLocation(
 
 \begin{frame}[fragile]
  \frametitle{Désérialisation/sérialisation, qui ?}
- 
+
  \begin{itemize}
   \item Des \code{HttpMessageConverter}s
   \item Autour du contrôleur (dans le \code{HandlerAdapter})
@@ -126,7 +125,7 @@ URI location = tpl.postForLocation(
 
 \begin{frame}[fragile]
  \frametitle{\code{HttpMessageConverter}}
- 
+
  \begin{javacode}
 public interface HttpMessageConverter<T> {
 
@@ -139,9 +138,9 @@ public interface HttpMessageConverter<T> {
   // d\'es\'erialisation (repr\'esentation vers objet)
   T read(Class<? extends T> clazz, HttpInputMessage inputMessage)
       throws IOException, HttpMessageNotReadableException;
-  
+
   // s\'erialisation (objet vers repr\'esentation)
-  void write(T t, MediaType contentType, 
+  void write(T t, MediaType contentType,
              HttpOutputMessage outputMessage)
       throws IOException, HttpMessageNotWritableException;
 
@@ -152,7 +151,7 @@ public interface HttpMessageConverter<T> {
 
 \begin{frame}[fragile]
  \frametitle{\code{HttpMessageConverter} dans Spring MVC}
- 
+
  \begin{itemize}
   \item Spring MVC connait
   \begin{itemize}
@@ -163,115 +162,128 @@ public interface HttpMessageConverter<T> {
   \item Il utilise celui qui peut faire la conversion
  \end{itemize}
 
-\end{frame} 
- 
+\end{frame}
+
 \begin{frame}
  \frametitle{\code{HttpMessageConverter}s disponibles}
- 
+
  \begin{itemize}
   \item JAXB2 (XML), Jackson (JSON), Atom, RSS, Spring OXM (XML)
   \item Formulaire HTML, \code{byte[]}, etc.
   \item Automatiquement enregistrés (si librairie tierce présente)
  \end{itemize}
 
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Déclarer un \code{HttpMessageConverter}s coté serveur} 
- 
- \begin{xmlcode}
-<mvc:annotation-driven>
-  <mvc:message-converters register-defaults="true">
-    <bean class="com.zenika.web.CsvHttpMessageConverter" />
-  </mvc:message-converters>
-</mvc:annotation-driven>
- \end{xmlcode}
+ \frametitle{Déclarer un \code{HttpMessageConverter}s coté serveur}
 
-\end{frame} 
+ \begin{javacode}
+@Configuration
+public static class ContentNegociationConfiguration
+              extends WebMvcConfigurerAdapter {
+
+  @Override
+  public void configureMessageConverters(
+                    List<HttpMessageConverter<?>> converters)
+    converters.add(new CsvHttpMessageConverter());
+  }
+
+}
+ \end{javacode}
+
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Déclarer un \code{HttpMessageConverter}s coté client} 
- 
+ \frametitle{Déclarer un \code{HttpMessageConverter}s coté client}
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
-List<HttpMessageConverter<?>> convs = 
+List<HttpMessageConverter<?>> convs =
   new ArrayList<HttpMessageConverter<?>>();
 convs.add(new MappingJacksonHttpMessageConverter());
 tpl.setMessageConverters(convs);
  \end{javacode}
 
-\end{frame} 
+\end{frame}
 
 \begin{frame}
- \frametitle{Intercepteurs} 
- 
+ \frametitle{Intercepteurs}
+
  \begin{itemize}
   \item Spring MVC propose des intercepteurs, cotés client et serveur
   \item Pratique pour des traitements transverses ou systématiques
  \end{itemize}
 
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Intercepteur coté serveur} 
- 
+ \frametitle{Intercepteur coté serveur}
+
  \begin{javacode}
 public interface HandlerInterceptor {
-  
-  boolean preHandle(HttpServletRequest request, 
-                    HttpServletResponse response, 
+
+  boolean preHandle(HttpServletRequest request,
+                    HttpServletResponse response,
                     Object handler) throws Exception;
 
-  void postHandle(HttpServletRequest request, 
-                  HttpServletResponse response, 
+  void postHandle(HttpServletRequest request,
+                  HttpServletResponse response,
                   Object handler, ModelAndView modelAndView)
              throws Exception;
-  
-  void afterCompletion(HttpServletRequest request, 
-                       HttpServletResponse response, 
+
+  void afterCompletion(HttpServletRequest request,
+                       HttpServletResponse response,
                        Object handler, Exception ex)
              throws Exception;
 
 }
  \end{javacode}
 
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Déclarer un intercepteur coté serveur} 
- 
- \begin{xmlcode}
-<mvc:interceptors>
-  <bean class="com.zenika.web.LogHandlerInterceptor" />
-</mvc:interceptors>
- \end{xmlcode}
+ \frametitle{Déclarer un intercepteur coté serveur}
 
-\end{frame} 
+ \begin{javacode}
+@Configuration
+public static class ContentNegociationConfiguration
+              extends WebMvcConfigurerAdapter {
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(new LogHandlerInterceptor());
+  }
+
+}
+ \end{javacode}
+
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Intercepteur coté client} 
- 
+ \frametitle{Intercepteur coté client}
+
  \begin{javacode}
 public interface ClientHttpRequestInterceptor {
 
-  ClientHttpResponse intercept(HttpRequest request, byte[] body, 
+  ClientHttpResponse intercept(HttpRequest request, byte[] body,
                                ClientHttpRequestExecution execution)
                        throws IOException;
 
 }
  \end{javacode}
 
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Déclarer un intercepteur coté client} 
- 
+ \frametitle{Déclarer un intercepteur coté client}
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
-List<ClientHttpRequestInterceptor> interceptors = 
+List<ClientHttpRequestInterceptor> interceptors =
   new ArrayList<ClientHttpRequestInterceptor>();
 interceptors.add(new LogClientHttpRequestInterceptor());
 tpl.setInterceptors(interceptors);
  \end{javacode}
 
-\end{frame} 
+\end{frame}

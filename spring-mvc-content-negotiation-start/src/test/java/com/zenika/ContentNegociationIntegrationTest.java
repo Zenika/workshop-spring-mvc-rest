@@ -6,43 +6,49 @@ package com.zenika;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.zenika.model.Contact;
+import com.zenika.web.CsvHttpMessageConverter;
+import com.zenika.web.LogClientHttpRequestInterceptor;
 
 /**
  * 
  * @author acogoluegnes
  * 
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(ContentNegociationApplication.class)
+@WebIntegrationTest(randomPort=true)
 public class ContentNegociationIntegrationTest {
-
-	private static RestTemplate tpl = new RestTemplate();
-
-	private final String url = "http://localhost:8080/content-negotiation/zen-contact/";
-
-	private static Server server;
-
-	@BeforeClass
-	public static void setUp() throws Exception {
-		startServer();
+	
+	RestTemplate tpl = new RestTemplate();
+	
+	String url = "http://localhost:{port}/";
+	
+	@Value("${local.server.port}") String port;
+	
+	@Before public void setUp() {
+		url = url.replace("{port}", port);
+		
 		// TODO 02 ajouter LogClientHttpRequestInterceptor sur le RestTemplate
 
 		// TODO 03 lancer le test (le header Accept doit apparaître dans la
 		// console)
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		server.stop();
 	}
 
 	@Test
@@ -92,24 +98,6 @@ public class ContentNegociationIntegrationTest {
 		// TODO 22 vérifier que le contenu est bien du CSV
 
 		// TODO 23 lancer le test (il doit fonctionner)
-	}
-
-	private static void startServer() throws Exception {
-		server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
-		connector.setHost("127.0.0.1");
-		server.addConnector(connector);
-
-		String app = "content-negotiation";
-
-		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/" + app);
-		wac.setWar("./src/main/webapp");
-		server.setHandler(wac);
-		server.setStopAtShutdown(true);
-
-		server.start();
 	}
 
 }
