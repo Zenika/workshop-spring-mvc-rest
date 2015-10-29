@@ -18,35 +18,38 @@
 
 \begin{frame}[fragile]
  \frametitle{Activer le support REST}
- 
+
  \begin{itemize}
-  \item Pour activer les dernières fonctionnalités de Spring MVC
-  \item Et notamment le support REST
- \end{itemize} 
- 
+  \item Utiliser le starter web de Spring Boot
+  \item Inclut Spring MVC, sérialisation JSON, etc
+ \end{itemize}
+
  \begin{xmlcode}
-<mvc:annotation-driven />
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
  \end{xmlcode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Récupérer une ressource (HTTP)}
- 
+
  \begin{itemize}
   \item Requête
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
-GET /crud-rest/zen-contact/contacts/1 HTTP/1.1
+GET /contacts/1 HTTP/1.1
 Accept: application/json
 Host: localhost:8080
  \end{textcode}
- 
+
   \begin{itemize}
   \item Réponse
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -57,65 +60,63 @@ Content-Type: application/json
 
 \begin{frame}[fragile]
  \frametitle{Récupérer une ressource (contrôleur)}
- 
+
  \begin{javacode}
-@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)   
-@ResponseBody                 
-public Contact contact(@PathVariable Long id) {  
+@RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
+public Contact contact(@PathVariable Long id) {
   return contactRepository.findOne(id);
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Récupérer une ressource (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(
   value="/contacts/{id}",     // URL
   method=RequestMethod.GET    // op\'eration
 )
-@ResponseBody                 // r\'esultat dans le corps de la r\'eponse
 public Contact contact(
     @PathVariable Long id) {  // \`a extraire de l'URL
   return contactRepository.findOne(id);
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Récupérer une ressource (client)}
- 
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
 Contact contact = tpl.getForObject(
-  "http://localhost:8080/crud-rest/zen-contact/contacts/{id}", 
+  "http://localhost:8080/contacts/{id}",
   Contact.class,
   id
 );
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Récupérer des ressources (HTTP)}
- 
+
  \begin{itemize}
   \item Requête
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
-GET /crud-rest/zen-contact/contacts HTTP/1.1
+GET /contacts HTTP/1.1
 Accept: application/json
 Host: localhost:8080
  \end{textcode}
- 
+
   \begin{itemize}
   \item Réponse
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -131,51 +132,50 @@ Content-Type: application/json
 
 \begin{frame}[fragile]
  \frametitle{Récupérer des ressources (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts",method=RequestMethod.GET)
-@ResponseBody 
 public List<Contact> contacts() {
   return contactRepository.findAll();
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Récupérer des ressources (client)}
- 
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
 Contact [] contacts = tpl.getForObject(
-  "http://localhost:8080/crud-rest/zen-contact/contacts", 
+  "http://localhost:8080/contacts",
   Contact[].class
 );
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Créer une ressource (HTTP)}
- 
+
  \begin{itemize}
   \item Requête
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
-POST /crud-rest/zen-contact/contacts HTTP/1.1
+POST /contacts HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 {"id":null,"firstname":"Oncle","lastname":"Picsou","age":100}
  \end{textcode}
- 
+
   \begin{itemize}
   \item Réponse
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
 HTTP/1.1 201 Created
-Location: http://localhost:8080/crud-rest/zen-contact/contacts/130
+Location: http://localhost:8080/contacts/130
 Content-Length: 0
  \end{textcode}
 
@@ -183,45 +183,57 @@ Content-Length: 0
 
 \begin{frame}[fragile]
  \frametitle{Créer une ressource (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts",method=RequestMethod.POST)
-@ResponseStatus(HttpStatus.CREATED)
-public void create(@RequestBody Contact contact,
-                   HttpServletRequest request, 
-                   HttpServletResponse response) {
+public ResponseEntity<Void> create(@RequestBody Contact contact,
+                          UriComponentsBuilder uriComponentsBuilder) {
   contactRepository.save(contact);
-  String location = ServletUriComponentsBuilder.fromRequest(request)
-    .pathSegment("{id}")
+ 	URI location = uriComponentsBuilder
+    .pathSegment("contacts","{id}")
     .build()
     .expand(contact.getId())
     .encode()
-    .toUriString();
-  response.setHeader("Location", location);
+    .toUri();
+ 	return ResponseEntity.created(location).build();
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Créer une ressource (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts",method=RequestMethod.POST)
-@ResponseStatus(HttpStatus.CREATED)  // code HTTP \`a retourner
-public void create(
+public ResponseEntity<Void> create(
       @RequestBody Contact contact,  // extraire du corps de requ\^ete
-      HttpServletRequest request, 
-      HttpServletResponse response) {
+      UriComponentsBuilder uriComponentsBuilder) {
   (...)
 }
- \end{javacode}  
+ \end{javacode}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Créer une ressource (contrôleur)}
+
+ \begin{javacode}
+@RequestMapping(value="/contacts",method=RequestMethod.POST)
+public ResponseEntity<Void> create(@RequestBody Contact contact,
+                          UriComponentsBuilder uriComponentsBuilder) {
+  (...)
+ 	return ResponseEntity.created(     // code r\'eponse
+    location                         // URL de la ressource cr\'e\'ee
+  ).build();
+}
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Créer une ressource (client)}
- 
+
  \begin{javacode}
 Contact contact = new Contact();
 contact.setFirstname("Oncle");
@@ -229,31 +241,31 @@ contact.setLastname("Picsou");
 contact.setAge(100);
 RestTemplate tpl = new RestTemplate();
 URI location = tpl.postForLocation(
-  "http://localhost:8080/crud-rest/zen-contact/contacts",
+  "http://localhost:8080/contacts",
   contact
 );
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Modifier une ressource (HTTP)}
- 
+
  \begin{itemize}
   \item Requête
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
-PUT /crud-rest/zen-contact/contacts/130 HTTP/1.1
+PUT /contacts/130 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 {"id":130,"firstname":"Oncle","lastname":"Picsou","age":90}
  \end{textcode}
- 
+
   \begin{itemize}
   \item Réponse
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
 HTTP/1.1 204 Not Content
 Content-Length: 0
@@ -263,20 +275,20 @@ Content-Length: 0
 
 \begin{frame}[fragile]
  \frametitle{Modifier une ressource (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.PUT)
-@ResponseStatus(HttpStatus.NO_CONTENT)
+@ResponseStatus(HttpStatus.NO_CONTENT)  // code r\'eponse
 public void update(@RequestBody Contact contact) {
   contactRepository.save(contact);
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Modifier une ressource (client)}
- 
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
 // cr\'eation donne l'URI
@@ -284,26 +296,26 @@ URI location = tpl.postForLocation(...);
 // modification
 contact.setAge(90);
 tpl.put(location,contact);
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Supprimer une ressource (HTTP)}
- 
+
  \begin{itemize}
   \item Requête
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
-DELETE /crud-rest/zen-contact/contacts/130 HTTP/1.1
+DELETE /contacts/130 HTTP/1.1
 Host: localhost:8080
  \end{textcode}
- 
+
   \begin{itemize}
   \item Réponse
- \end{itemize} 
- 
+ \end{itemize}
+
  \begin{textcode}
 HTTP/1.1 204 Not Content
 Content-Length: 0
@@ -313,33 +325,33 @@ Content-Length: 0
 
 \begin{frame}[fragile]
  \frametitle{Supprimer une ressource (contrôleur)}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.DELETE)
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public void delete(@PathVariable Long id) {
   contactRepository.delete(id);
 }
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Supprimer une ressource (client)}
- 
+
  \begin{javacode}
 RestTemplate tpl = new RestTemplate();
 // cr\'eation donne l'URI
 URI location = tpl.postForLocation(...);
 // suppression
 tpl.delete(location);
- \end{javacode}  
+ \end{javacode}
 
 \end{frame}
 
 \begin{frame}
  \frametitle{Gestion des erreurs}
- 
+
  \begin{itemize}
   \item Ex. : demande d'une ressource qui n'existe pas
   \item Le serveur doit retourner une erreur 404
@@ -350,10 +362,9 @@ tpl.delete(location);
 
 \begin{frame}[fragile]
  \frametitle{Gestion des erreurs, coté serveur, solution 1}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
-@ResponseBody
 public Contact contact(@PathVariable Long id) {
   Contact contact = contactRepository.findOne(id);
   if(contact == null) {
@@ -371,11 +382,11 @@ public void notFound() { }
 
 \begin{frame}[fragile]
  \frametitle{Gestion des erreurs, coté serveur, solution 2}
- 
+
  \begin{itemize}
   \item Retourner une \code{@ResponseEntity}
  \end{itemize}
- 
+
  \begin{javacode}
 @RequestMapping(value="/contacts/{id}",method=RequestMethod.GET)
 public ResponseEntity<Contact> contact(@PathVariable Long id) {
@@ -385,18 +396,14 @@ public ResponseEntity<Contact> contact(@PathVariable Long id) {
     contact == null ? HttpStatus.NOT_FOUND : HttpStatus.OK
   );
   return response;
-}  
+}
  \end{javacode}
- 
- \begin{itemize}
-  \item \code{@ResponseBody} plus nécessaire
- \end{itemize}
 
 \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Gestion des erreurs, coté client}
- 
+
  \begin{javacode}
 try {
   Contact contact = tpl.getForObject(location, Contact.class);
@@ -404,7 +411,7 @@ try {
   // e.getStatusCode() == HttpStatus.NOT\_FOUND
 }
  \end{javacode}
- 
+
  \begin{itemize}
   \item Stratégie de gestion des exceptions configurable
   \item Propriété \code{errorHandler} du \code{RestTemplate}
