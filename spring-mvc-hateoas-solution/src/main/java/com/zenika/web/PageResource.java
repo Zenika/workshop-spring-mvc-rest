@@ -6,6 +6,7 @@ package com.zenika.web;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +27,7 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 			String sizeParam) {
 		super();
 		this.page = page;
-		if(page.hasPreviousPage()) {
+		if(page.hasPrevious()) {
 			String path = createBuilder()
 				.queryParam(pageParam,page.getNumber()-1)
 				.queryParam(sizeParam,page.getSize())
@@ -35,7 +36,7 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 			Link link = new Link(path, Link.REL_PREVIOUS);
 			add(link);
 		}
-		if(page.hasNextPage()) {
+		if(page.hasNext()) {
 			String path = createBuilder()
 				.queryParam(pageParam,page.getNumber()+1)
 				.queryParam(sizeParam,page.getSize())
@@ -106,23 +107,23 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 	}
 
 	@Override
-	public boolean hasPreviousPage() {
-		return page.hasPreviousPage();
+	public boolean hasPrevious() {
+		return page.hasPrevious();
 	}
 
 	@Override
-	public boolean isFirstPage() {
-		return page.isFirstPage();
+	public boolean isFirst() {
+		return page.isFirst();
 	}
 
 	@Override
-	public boolean hasNextPage() {
-		return page.hasNextPage();
+	public boolean hasNext() {
+		return page.hasNext();
 	}
 
 	@Override
-	public boolean isLastPage() {
-		return page.isLastPage();
+	public boolean isLast() {
+		return page.isLast();
 	}
 
 	@Override
@@ -143,6 +144,11 @@ public class PageResource<T> extends ResourceSupport implements Page<T> {
 	@Override
 	public Sort getSort() {
 		return page.getSort();
+	}
+
+	@Override
+	public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
+		throw new UnsupportedOperationException();
 	}
 	
 }

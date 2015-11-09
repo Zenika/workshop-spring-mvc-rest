@@ -3,41 +3,43 @@
  */
 package com.zenika;
 
-import org.codehaus.jackson.JsonNode;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.hateoas.Link;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zenika.model.Contact;
 
 /**
  * 
  * @author acogoluegnes
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(HateoasApplication.class)
+@WebIntegrationTest(randomPort=true)
 public class HateoasIntegrationTest {
 	
-	private static RestTemplate tpl = new RestTemplate();
+	RestTemplate tpl = new RestTemplate();
 	
-	private final String BASE_URL = "http://localhost:8080/hateoas/zen-contact/";
+	String url = "http://localhost:{port}/";
 	
-	private static Server server;
+	@Value("${local.server.port}") String port;
 	
-	@BeforeClass public static void setUp() throws Exception {
-		startServer();
-	}
-	
-	@AfterClass public static void tearDown() throws Exception {
-		server.stop();
+	@Before public void setUp() {
+		url = url.replace("{port}", port);
 	}
 	
 	@Test public void selectContacts() throws Exception {
 		// TODO 01 lancer le test et vérifier qu'il fonctionne
-		JsonNode nodes = tpl.getForObject(BASE_URL+"contacts", JsonNode.class);
+		JsonNode nodes = tpl.getForObject(url+"contacts", JsonNode.class);
 		int totalElements = 12;
 		Assert.assertEquals(totalElements,nodes.size());
 		// TODO 02 écrire dans la console la variables nodes et analyser le contenu
@@ -60,7 +62,7 @@ public class HateoasIntegrationTest {
 	}
 	
 	@Test public void selectContactsPages() throws Exception {
-		String pageUrl = BASE_URL+"contacts/pages?page={page}&size={size}";
+		String pageUrl = url+"contacts/pages?page={page}&size={size}";
 		int pageSize = 5;
 		// 1ère page
 		JsonNode page = tpl.getForObject(
@@ -70,7 +72,7 @@ public class HateoasIntegrationTest {
 		);
 		Assert.assertEquals(page.get("content").size(), pageSize);
 		int totalElements = 12;
-		Assert.assertEquals(totalElements, page.get("totalElements").getIntValue());
+		Assert.assertEquals(totalElements, page.get("totalElements").asInt());
 		// TODO 15 afficher la page dans la console, lancer le test et analyser la sortie console
 		// pour l'instant, une page ne contient pas de lien vers les autres pages
 		
@@ -114,30 +116,12 @@ public class HateoasIntegrationTest {
 			return null;
 		} else {
 			for(JsonNode link : links) {
-				if(rel.equals(link.get("rel").getTextValue())) {
-					return link.get("href").getTextValue();
+				if(rel.equals(link.get("rel").asText())) {
+					return link.get("href").asText();
 				}
 			}
 			return null;
 		}
 	}
 	
-	private static void startServer() throws Exception {
-		server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(8080);
-		connector.setHost("127.0.0.1");
-		server.addConnector(connector);
-
-		String app = "hateoas";
-		
-		WebAppContext wac = new WebAppContext();
-		wac.setContextPath("/"+app);
-		wac.setWar("./src/main/webapp");
-		server.setHandler(wac);
-		server.setStopAtShutdown(true);
-
-		server.start();
-	}
-
 }

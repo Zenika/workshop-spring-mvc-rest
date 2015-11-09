@@ -3,14 +3,26 @@
  */
 package com.zenika.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.zenika.model.Contact;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author acogoluegnes
  *
  */
-public interface ContactRepository extends JpaRepository<Contact, Long>{
+public interface ContactRepository {
 
+    Contact findOne(Long id);
+
+    List<Contact> findAll();
+    
+    Page<Contact> findAll(Pageable pageable);
+
+    Contact save(Contact contact);
+
+    void delete(Long id);
 }

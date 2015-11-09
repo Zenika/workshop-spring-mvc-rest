@@ -45,7 +45,7 @@
 
 \begin{frame}[fragile]
  \frametitle{\code{Link}}
- 
+
  \begin{javacode}
 Link link = new Link(
   "http://localhost:8080/hateoas/zen-contact/contacts/1",
@@ -62,12 +62,12 @@ Link link = new Link(
 
 \begin{frame}[fragile]
  \frametitle{Ressource avec des liens}
- 
+
  \begin{itemize}
   \item Rajouter un support pour \code{Link} dans ses ressources...
   \item ... ou utiliser \code{ResourceSupport}
  \end{itemize}
- 
+
  \begin{javacode}
 public class ShortContact extends ResourceSupport {
 
@@ -89,9 +89,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 @Controller
 @RequestMapping("/contacts")
-public class ContactController { 
+public class ContactController {
   ...
-  
+
   // dans une m\'ethode
   // lien \`a partir de l'URL du contr\^oleur, ajout d'un identifiant
   Link detail = linkTo(ContactController.class)
@@ -101,4 +101,28 @@ public class ContactController {
 }
  \end{javacode}
 
-\end{frame} 
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Lien sur une méthode de contrôleur}
+
+ \begin{javacode}
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+
+@RequestMapping(method=RequestMethod.GET)
+@ResponseBody
+public List<ShortContact> contacts() {
+
+  // fait r\'ef\'erence \`a la m\'ethode du contr\^oleur
+  Link detail = linkTo(
+    methodOn(ContactController.class).contact(contact.getId())
+  ).withSelfRel();
+
+}
+
+@RequestMapping(value="/{id}",method=RequestMethod.GET)
+public ResponseEntity<Contact> contact(@PathVariable Long id) {	}
+
+ \end{javacode}
+
+\end{frame}

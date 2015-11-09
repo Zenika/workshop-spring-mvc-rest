@@ -3,7 +3,7 @@
  */
 package com.zenika.web;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.zenika.model.Contact;
 import com.zenika.repository.ContactRepository;
@@ -31,7 +32,7 @@ import com.zenika.repository.ContactRepository;
  * @author acogoluegnes
  *
  */
-@Controller
+@RestController
 @RequestMapping("/contacts")
 public class ContactController {
 	
@@ -56,7 +57,7 @@ public class ContactController {
 			ShortContact resource = new ShortContact();
 			resource.setFirstname(contact.getFirstname());
 			resource.setLastname(contact.getLastname());
-			Link detail = linkTo(ContactController.class).slash(contact.getId()).withSelfRel();
+			Link detail = linkTo(methodOn(ContactController.class).contact(contact.getId())).withSelfRel();
 			resource.add(detail);
 			resources.add(resource);
 		}
