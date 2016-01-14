@@ -47,7 +47,7 @@ public class RestControllerIntegrationTest {
 		// (utiliser la propriété url pour le début du chemin)
 		
 		// TODO 05 vérifier que le nombre de contact est bon
-		// (il y a 12 contacts, voir le fichier data.sql)
+		// (il y a 12 contacts, ils sont définis dans la classe InMemoryContactRepository)
 		
 		// TODO 06 lancer le test (il doit passer)
 		
@@ -98,6 +98,7 @@ public class RestControllerIntegrationTest {
 		
 		// TODO 26 s'assurer que le compte de contact est bon (revenu à initialCount)
 
+		// TODO 27 lancer le test
 		
 		// TODO Bonus 02 tenter de récupérer le contact et vérifier que l'on récupère une 404
 		

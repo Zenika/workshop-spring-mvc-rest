@@ -63,7 +63,7 @@ public class ContactControllerTest {
 
     @Test
     public void contactDoesNotExists() throws Exception {
-        // TODO 09 écrire le test pour méthode contact
+        // TODO 09 écrire le test pour la méthode contact
         // on suppose que le contact n'existe pas
         // (regarder la méthode correspondante dans le controleur)
 
@@ -124,7 +124,11 @@ public class ContactControllerTest {
     }
 
 
-    // TODO 05 écrire la classe de configuration
+    // TODO 05 analyser la classe de configuration
+    // cette classe est automatiquement utilisée lors du lancement du test
+    // elle active le component scan pour créer le controleur
+    // et utilise un mock pour le ContactRepository.
+
 
     @Configuration
     @EnableWebMvc
