@@ -25,6 +25,7 @@ done
 mvn -f ./pom.xml clean
 mkdir "$buildDir"/projects
 cp -r ./spring-* "$buildDir"/projects
+cp -r ./out-of-container-test-* "$buildDir"/projects
 cp ./pom.xml "$buildDir"/projects
 cp ./settings.xml "$buildDir"
 mvn -f "$buildDir"/projects/pom.xml eclipse:eclipse
