@@ -4,23 +4,16 @@
 package com.zenika;
 
 
-import java.net.URI;
-
-import org.junit.Assert;
+import com.zenika.model.Contact;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
-
-import com.zenika.model.Contact;
 
 /**
  * 
@@ -28,8 +21,7 @@ import com.zenika.model.Contact;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(RestApplication.class)
-@WebIntegrationTest(randomPort=true)
+@SpringBootTest(classes = RestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestControllerIntegrationTest {
 	
 	RestOperations tpl = new RestTemplate();

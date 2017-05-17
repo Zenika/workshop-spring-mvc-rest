@@ -4,19 +4,17 @@
 package com.zenika;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.zenika.model.Contact;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.Link;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.zenika.model.Contact;
 
 /**
  * 
@@ -24,8 +22,7 @@ import com.zenika.model.Contact;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(HateoasApplication.class)
-@WebIntegrationTest(randomPort=true)
+@SpringBootTest(classes = HateoasApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HateoasIntegrationTest {
 	
 	RestTemplate tpl = new RestTemplate();

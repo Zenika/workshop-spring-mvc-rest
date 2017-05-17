@@ -3,16 +3,15 @@
  */
 package com.zenika;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.zenika.model.Contact;
+import com.zenika.web.CsvHttpMessageConverter;
+import com.zenika.web.LogClientHttpRequestInterceptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -22,9 +21,8 @@ import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConvert
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import com.zenika.model.Contact;
-import com.zenika.web.CsvHttpMessageConverter;
-import com.zenika.web.LogClientHttpRequestInterceptor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -32,8 +30,7 @@ import com.zenika.web.LogClientHttpRequestInterceptor;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(ContentNegociationApplication.class)
-@WebIntegrationTest(randomPort=true)
+@SpringBootTest(classes = ContentNegociationApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ContentNegociationIntegrationTest {
 	
 	RestTemplate tpl = new RestTemplate();
