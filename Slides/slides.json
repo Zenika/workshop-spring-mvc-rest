@@ -5,5 +5,7 @@
   "03_application.md",
   "04_rest_principles.md",
   "05_rest.md",
-  "06_test.md"
+  "06_test.md",
+  "07_content.md",
+  "08_hateoas.md"
 ]
