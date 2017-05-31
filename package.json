@@ -1,12 +1,12 @@
 {
-  "name": "workshop-spring-core",
-  "description": "Workshop Spring Core",
+  "name": "workshop-spring-mvc",
+  "description": "Workshop Spring MVC",
   "version": "0.0.1",
   "author": "Zenika",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zenika/workshop-spring-core"
+    "url": "https://github.com/Zenika/workshop-spring-mvc"
   },
   "private": true,
   "dependencies": {

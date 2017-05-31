@@ -2,4 +2,4 @@ Domaine: [Java, Spring]
 
 Sous-domaine: Framework
 
-# Titre: Workshop Spring Core
+# Titre: Workshop Spring MVC
