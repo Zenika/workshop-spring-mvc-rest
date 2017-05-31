@@ -1,8 +1,9 @@
 [
   "00_agenda.md",
-  "01_introduction.md",
-  "02_container.md",
-  "03_data.md",
-  "04_web.md",
-  "05_boot.md"
+  "01_presentation.md",
+  "02_architecture.md",
+  "03_application.md",
+  "04_rest_principles.md",
+  "05_rest.md",
+  "06_test.md"
 ]

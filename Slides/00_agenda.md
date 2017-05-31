@@ -1,7 +1,6 @@
-# Workshop Spring Core <img src="ressources/images/spring-by-pivotal.png" alt="Logo Spring" >
+# Workshop Spring MVC<img src="ressources/images/spring-by-pivotal.png" alt="Logo Spring" >
 
 <!-- .slide: class="page-title" -->
-
 
 
 
@@ -9,11 +8,14 @@
 
 <!-- .slide: id="master-toc" class="toc" -->
 
-*   [Introduction](#/1)
-*   [Le conteneur](#/2)
-*   [Accès aux données](#/3)
-*   [Le Web](#/4)
-*   [Spring Boot](#/5)
+*   [Présentation](#/1)
+*   [Architecture](#/2)
+*   [Application Web](#/3)
+*   [Principes de REST](#/4)
+*   [REST](#/5)
+*   [Tests d'intégration hors-conteneur](#/6)
+*   [Négociation de contenu](#/7)
+*   [HATEOAS](#/8)
 
 
 
